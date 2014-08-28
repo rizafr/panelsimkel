@@ -595,7 +595,7 @@
 			//selesai sekolah
 		?>	 
 		
-		Z<?php
+		<?php
 			//permintaan serbaguna
 			$serbaguna = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
 										from data_penduduk dp, permintaan_serbaguna an
