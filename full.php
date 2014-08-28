@@ -64,7 +64,7 @@
               <?php print date('d F Y'); ?> | <span id="clock"> <?php print date('H:i:s'); ?></span> 
             </ul>
             <ul class="nav pull-left">
-             Sistem Informasi Manajemen <span>Kelurahan Leuwi Gajah</span> 
+            <img id="logo" src="images/cimahi.png" height="30px" width="30px"/> Sistem Informasi Manajemen <span>Kelurahan Leuwi Gajah</span> 
             </ul>
             </div>
           </div>

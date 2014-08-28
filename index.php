@@ -2,9 +2,9 @@
 <head>
 	<title>Sistem Informasi Manajemen Kelurahan Leuwi Gajah</title>
 <!-- For ease i'm just using a JQuery version hosted by JQuery- you can download any version and link to it locally -->
-		<meta name="description" content="Loading Effects for Grid Items with CSS Animations" />
-		<meta name="keywords" content="css animation, loading effect, google plus, grid items, masonry" />
-		<meta name="author" content="Codrops" />
+		<meta name="description" content="Sistem Informasi Manajemen Kelurahan" />
+		<meta name="keywords" content="sim, simkel, sistem informasi, Sistem Informasi Kelurahan" />
+		<meta name="author" content="Ratih & Riza" />
 		<link rel="shortcut icon" href="images/cimahi.png"> 
 		<link rel="stylesheet" type="text/css" href="css/default.css" />
 		<link rel="stylesheet" type="text/css" href="css/component.css" />
