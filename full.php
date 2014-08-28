@@ -61,7 +61,7 @@
           </button>
             <div class="nav-collapse collapse">
             <ul class="nav pull-right">
-              <?php print date('d F Y'); ?> | <span id="clock"> <?php print date('H:i:s'); ?></span> 
+              <?php print date('l, d F Y'); ?> | <span id="clock"> <?php print date('H:i:s'); ?></span> 
             </ul>
             <ul class="nav pull-left">
             <img id="logo" src="images/cimahi.png" height="30px" width="30px"/> Sistem Informasi Manajemen <span>Kelurahan Leuwi Gajah</span> 
