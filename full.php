@@ -48,6 +48,22 @@
         document.getElementById("clock").innerHTML = (sh.length==1?"0"+sh:sh) + ":" + (sm.length==1?"0"+sm:sm) + ":" + (ss.length==1?"0"+ss:ss);
     }
 </script>
+<?php 
+// Array Hari
+$array_hari = array(1=>'Senin','Selasa','Rabu','Kamis','Jumat', 'Sabtu','Minggu');
+$hari = $array_hari[date('N')];
+
+//Format Tanggal 
+$tanggal = date ('j');
+
+//Array Bulan 
+$array_bulan = array(1=>'Januari','Februari','Maret', 'April', 'Mei', 'Juni','Juli','Agustus','September','Oktober', 'November','Desember'); 
+ $bulan = $array_bulan[date('n')];
+ 
+//Format Tahun 
+$tahun = date('Y');
+?>
+
   </head>
   <body>
 
@@ -61,7 +77,7 @@
           </button>
             <div class="nav-collapse collapse">
             <ul class="nav pull-right">
-              <?php print date('l, d F Y'); ?> | <span id="clock"> <?php print date('H:i:s'); ?></span> 
+              <?php echo $hari . "," ." ". $tanggal ." ". $bulan ." ". $tahun; ?> | <span id="clock"> <?php print date('H:i:s'); ?></span> 
             </ul>
             <ul class="nav pull-left">
             <img id="logo" src="images/cimahi.png" height="30px" width="30px"/> Sistem Informasi Manajemen <span>Kelurahan Leuwi Gajah</span> 
