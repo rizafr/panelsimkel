@@ -14,8 +14,21 @@
 		<link rel="stylesheet" type="text/css" href="css/default.css" />
 		<link rel="stylesheet" type="text/css" href="css/component.css" />
 		<script type="text/javascript" src="js/jquery.js"></script>
-	<script type="text/javascript" src="js/easySlider1.7.js"></script>
+		<script type="text/javascript" src="js/easySlider1.7.js"></script>
 		<script src="js/modernizr.custom.js"></script>
+		<style>
+			.biru {				
+				background: #3498db;
+			}
+			
+			.kuning {				
+				background: #D2FF4C;
+			}
+			
+			.hijau {				
+				background: #3fbf79;
+			}
+		</style>
 		
 		
    
@@ -30,9 +43,8 @@
 			?> 
 			<div id="owl-demo" class="owl-carousel">
 			<li class="animate">
-				<div class="card">
-					<img class="profile-img" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png">
-					<div class="isi">
+				<div class="card biru">					
+					<div class="isi ">
 					<?php echo $no; ?>
 					<br /><?php echo $row['no_kk']?>
 					<br /><?php echo $row['nama']?>

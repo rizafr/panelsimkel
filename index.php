@@ -1,16 +1,28 @@
+<?php include "jam.php"?>
 <html>
 <head>
 	<title>Sistem Informasi Manajemen Kelurahan Leuwi Gajah</title>
-<!-- For ease i'm just using a JQuery version hosted by JQuery- you can download any version and link to it locally -->
+	  <meta charset="utf-8">
+	<!-- For ease i'm just using a JQuery version hosted by JQuery- you can download any version and link to it locally -->
 		<meta name="description" content="Sistem Informasi Manajemen Kelurahan" />
 		<meta name="keywords" content="sim, simkel, sistem informasi, Sistem Informasi Kelurahan" />
 		<meta name="author" content="Ratih & Riza" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="shortcut icon" href="images/cimahi.png"> 
 		<link rel="stylesheet" type="text/css" href="css/default.css" />
 		<link rel="stylesheet" type="text/css" href="css/component.css" />
 		<script type="text/javascript" src="js/jquery.js"></script>
 		<script type="text/javascript" src="js/easySlider1.7.js"></script>
 		<script src="js/modernizr.custom.js"></script>
+		<link href="../assets/css/bootstrapTheme.css" rel="stylesheet">
+		<link href="../assets/css/custom.css" rel="stylesheet">	
+		 
+	
+    
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,300,600,700' rel='stylesheet' type='text/css'>
+    <link href="../assets/css/bootstrapTheme.css" rel="stylesheet">
+    <link href="../assets/css/custom.css" rel="stylesheet">	
+	
 		
 		
 <style type="text/css">
@@ -101,21 +113,80 @@
             }
         });
         var $container = $("#content");
-        $container.load("full.php");
+        $container.load("data.php");
         var refreshId = setInterval(function()
         {
-            $container.load('full.php');
+            $container.load('data.php');
         }, 39000); //5menit
     });
 })(jQuery);
 </script>
 </head>
+<!--Header !-->
 <body onload="setInterval('displayServerTime()', 1000);">
- 
-<div id="wrapper">
-	    <div id="content"></div>
-    <img src="loader.gif" id="loading fade-in.three" alt="loading" style="display:none;" />
-</div>
+    <div id="top-nav" class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+            <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <?php echo $hari . "," ." ". $tanggal ." ". $bulan ." ". $tahun; ?> | <span id="clock"> <?php print date('H:i:s'); ?></span> 
+            </ul>
+            <ul class="nav pull-left">
+            <img id="logo" src="images/cimahi.png" height="30px" width="30px"/> Sistem Informasi Manajemen <span>Kelurahan Leuwigajah</span> 
+            </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    <div id="title">
+      <div class="container">
+        <div class="row">
+          <div class="span12">
+            <h1 class="hero-unit"> Selamat Datang di Kelurahan Leuwigajah</h1>
+			Keterangan:
+			<table>
+			<tr>
+				<td width="30px;"><div class="biru">&nbsp;</td>
+				<td>&nbsp;:&nbsp;</td>
+				<td>Antrian</td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td width="30px;"><div class="kuning">&nbsp;</td>
+				<td>&nbsp;:&nbsp;</td>
+				<td>Dalam Proses</td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td width="30px;"><div class="hijau">&nbsp;</td>
+				<td>&nbsp;:&nbsp;</td>
+				<td>Selesai</td>
+			</tr>
+		  </table>
+		  
+          </div>
+        </div>
+      </div>
+    </div>
+	
+ <!--isi konten !-->
+	<div id="wrapper">
+			<div id="content"></div>
+		<img src="loader.gif" id="loading fade-in.three" alt="loading" style="display:none;" />
+	</div>
+	
+	<!--isi footer !-->
+	<div id="footer" class="navbar navbar-fixed-bottom">
+      <div class="container">
+        <div class="row">
+          <div class="span12">
+           <p><marquee align="center" direction="left" scrollmount="3" > .:Sistem Informasi Manajemen Kelurahan Pemerintah Kota Cimahi 2014:. </marquee> 
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
 
  
 </body>

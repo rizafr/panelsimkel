@@ -108,8 +108,8 @@ padding: 8px 12px;
 /* Footer */
 
 #footer{
-	padding: 20px 0px;
-	/*background: #f3f3f3;*/
+	padding: 10px 0px;
+	background: #f3f3f3;
 	text-align: center
 }
 .twitter-share-button{
