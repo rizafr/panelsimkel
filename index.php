@@ -181,7 +181,7 @@
       <div class="container">
         <div class="row">
           <div class="span12">
-           <p><marquee align="center" direction="left" scrollmount="3" > .:Sistem Informasi Manajemen Kelurahan Pemerintah Kota Cimahi 2014:. </marquee> 
+          <p><marquee align="center" direction="left" scrollmount="3" > .:Sistem Informasi Manajemen Kelurahan Pemerintah Kota Cimahi 2014:. </marquee> 
             </p>
           </div>
         </div>
