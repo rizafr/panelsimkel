@@ -46,13 +46,13 @@
 				<div class="card biru">					
 					<div class="isi ">
 					<?php echo $no; ?>
-					<p><?php echo $row['no_kk']?></p>
-					<p><h3><?php echo $row['nama']?></h3></p>
-					<p><?php echo $row['alamat']?></p>
+					<br /><?php echo $row['no_kk']?>
+					<br /><?php echo $row['nama']?>
+					<br /><?php echo $row['alamat']?>
 					</div>
-					<p><div class="status clearfix">
+					<br /><div class="status clearfix">
 							Status
-						</div></p>
+						</div>
 				</div>
 			</li>	
 				
