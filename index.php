@@ -177,7 +177,7 @@
 	</div>
 	
 	<!--isi footer !-->
-	<div id="footer" class="navbar navbar-fixed-bottom">
+	<div id="footer">
       <div class="container">
         <div class="row">
           <div class="span12">

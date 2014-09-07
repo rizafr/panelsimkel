@@ -6,10 +6,10 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-		<title>Sistem Informasi Manajemen Kelurahan Leuwi Gajah</title>
-		<meta name="description" content="Loading Effects for Grid Items with CSS Animations" />
-		<meta name="keywords" content="css animation, loading effect, google plus, grid items, masonry" />
-		<meta name="author" content="Codrops" />
+		<title>Sistem Informasi Manajemen Kelurahan Leuwigajah</title>
+		<meta name="description" content="Sistem Informasi Manajemen Kelurahan Leuwigajah" />
+		<meta name="keywords" content="Sistem Informasi Manajemen Kelurahan Leuwigajah" />
+		<meta name="author" content="riza dan ratih" />
 		<link rel="shortcut icon" href="images/cimahi.png"> 
 		<link rel="stylesheet" type="text/css" href="css/default.css" />
 		<link rel="stylesheet" type="text/css" href="css/component.css" />
@@ -19,14 +19,20 @@
 		<style>
 			.biru {				
 				background: #3498db;
+				border: 3px solid #0086B3;
+				
 			}
 			
 			.kuning {				
-				background: #D2FF4C;
+				background: #FF9326;
+				border: 3px solid #FF8000;
+				
 			}
 			
 			.hijau {				
 				background: #3fbf79;
+				border: 3px solid #00B32D;
+				
 			}
 		</style>
 		
@@ -36,24 +42,53 @@
 	<body>
 		
 			<ul class="grid effect-8" id="grid">
-			<?php
-				$result = mysql_query("SELECT * FROM data_penduduk");
-				$no = 1;
-				while ($row = mysql_fetch_array($result)) {
-			?> 
 			<div id="owl-demo" class="owl-carousel">
+			<?php
+			//andonikah
+			
+			$handonnikah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+										from data_penduduk dp, permintaan_andonnikah an
+										where an.nik=dp.nik   
+										order by an.waktu_antrian desc, an.status desc") or die (mysql_error());
+			$no = 1;
+				while ($row = mysql_fetch_array($handonnikah) or die (mysql_error())) {
+			
+			?> 
+			
 			<li class="animate">
-				<div class="card biru">					
+			<?php if($row['status']=='1'){ ?>
+					<div class="card biru">	
+				<?php $row['status']='Masuk Antrian';
+						$waktu ="Waktu Antri: ". $row['waktu_antrian'];
+						$oleh ="Petugas : ". $row['antrian_oleh'];
+				?>  
+					
+
+			<?php }else if($row['status']=='2'){ ?>	
+					<div class="card kuning">
+					<?php $row['status']='Masih dalam proses';
+						$waktu = "Waktu Proses: ". $row['waktu_proses'];
+						$oleh ="Petugas : ". $row['proses_oleh'];
+					
+					?>
+						
+			<?php }else if($row['status']=='3'){ ?>	
+					<div class="card hijau">
+					<?php $row['status']='Surat telah selesai';	
+							$waktu = "Waktu  selesai: ". $row['waktu_selesai'];					
+				 }?>				
 					<div class="isi ">
-					<?php echo $no; ?>
-					<br /><?php echo $row['no_kk']?>
-					<br /><?php echo $row['nama']?>
-					<br /><?php echo $row['alamat']?>
-					</div>
-					<br /><div class="status clearfix">
-							Status
+						Nomor Registrasi : <b><?php echo $row['no_registrasi']?></b>
+						<br /><font size="6px"><b><?php echo $row['nama']?></b></font>
+						<br /><?php echo $row['alamat']?>
+						<br />Surat Permintaan Andon Nikah
+						<br /> <?php echo $waktu?>
+						<br /> <?php echo $oleh?>
 						</div>
-				</div>
+						<div class="status clearfix">
+							<?php echo $row['status']?><br />							
+						</div>
+					</div>
 			</li>	
 				
 			<?php
@@ -61,7 +96,7 @@
 		}
 		?>	</div>
 			</ul>
-		</div>
+		
 		  <script src="../assets/js/jquery-1.9.1.min.js"></script> 
 			<script src="../owl-carousel/owl.carousel.js"></script>
 			
