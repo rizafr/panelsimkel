@@ -114,10 +114,10 @@
             }
         });
         var $container = $("#content");
-        $container.load("data.php");
+        $container.load("full.php");
         var refreshId = setInterval(function()
         {
-            $container.load('data.php');
+            $container.load('full.php');
         }, 39000); //5menit
     });
 })(jQuery);
@@ -175,11 +175,11 @@
  <div class="container-fluid">
 	<div class="row">
 		
-		<div class="span10">
+		<!--<div class="span12"> -->
 			<div id="content"></div>
 			<img src="loader.gif" id="loading fade-in.three" alt="loading" style="display:none;" />
-		</div> 
-		<div class="span3">
+	<!--<	</div>  -->
+		<!--<div class="span3">
 			<p> .: DAFTAR NAMA WARGA:.</p> 		
 			<?php $handonnikah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
 										from data_penduduk dp, permintaan_andonnikah an
@@ -196,7 +196,7 @@
 						<br />Surat Permintaan Andon Nikah<br />
 		<?php }?>			
 			
-		</div>
+		</div>-->
 	</div>
 </div>
 	
