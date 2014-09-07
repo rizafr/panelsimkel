@@ -1,5 +1,6 @@
 .grid {
-	max-width: 69em;
+	/*max-width: 69em;*/
+	max-width: 60em;
 	list-style: none;
 	margin: 30px auto;
 	padding: 0;
@@ -140,7 +141,7 @@
 
 .card { 
 	height: 220px;	 
-	width:350px; 
+	width:300px; 
 	background: #3498db;
 	padding: 15px 0px;
 	margin: 5px;

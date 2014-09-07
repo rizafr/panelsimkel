@@ -171,10 +171,29 @@
     </div>
 	
  <!--isi konten !-->
-	<div id="wrapper">
+ <div class="container">
+	<div class="row">
+		
+		<div class="span10">
 			<div id="content"></div>
-		<img src="loader.gif" id="loading fade-in.three" alt="loading" style="display:none;" />
+			<img src="loader.gif" id="loading fade-in.three" alt="loading" style="display:none;" />
+		</div>
+		<div class="span2">
+			<p> .: DAFTAR NAMA WARGA:.</p> 
+			<p> .:Sistem Informasi Manajemen Kelurahan Pemerintah Kota Cimahi 2014:.</p> 
+			<p> .:Sistem Informasi Manajemen Kelurahan Pemerintah Kota Cimahi 2014:.</p> 
+			<p> .:Sistem Informasi Manajemen Kelurahan Pemerintah Kota Cimahi 2014:.</p> 
+			<p> .:Sistem Informasi Manajemen Kelurahan Pemerintah Kota Cimahi 2014:.</p> 
+			<p> .:Sistem Informasi Manajemen Kelurahan Pemerintah Kota Cimahi 2014:.</p> 
+			<p> .:Sistem Informasi Manajemen Kelurahan Pemerintah Kota Cimahi 2014:.</p> 
+			<p> .:Sistem Informasi Manajemen Kelurahan Pemerintah Kota Cimahi 2014:.</p> 
+			<p> .:Sistem Informasi Manajemen Kelurahan Pemerintah Kota Cimahi 2014:.</p> 
+		
+		</div>
 	</div>
+</div>
+	
+	
 	
 	<!--isi footer !-->
 	<div id="footer">
