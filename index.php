@@ -175,35 +175,18 @@
  <div class="container-fluid">
 	<div class="row">
 		
-		<div class="span10">
+		<div class="span12">
 			<div id="content"></div>
 			<img src="loader.gif" id="loading fade-in.three" alt="loading" style="display:none;" />
 		</div> 
-		<div class="span3">
-			<p> .: DAFTAR NAMA WARGA:.</p> 		
-			<?php $handonnikah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
-										from data_penduduk dp, permintaan_andonnikah an
-										where an.nik=dp.nik   
-										order by an.waktu_antrian desc, an.status desc limit 3") or die (mysql_error());
-			$no = 1;
-				while ($row = mysql_fetch_array($handonnikah) or die (mysql_error())) {
-			
-			?> 
 		
-						<br />Nomor Registrasi : <b><?php echo $row['no_registrasi']?></b>
-						<br /><b><?php echo $row['nama']?></b>
-						<br /><?php echo $row['alamat']?>
-						<br />Surat Permintaan Andon Nikah<br />
-		<?php }?>			
-			
-		</div>
 	</div>
 </div>
 	
 	
 	
 	<!--isi footer !-->
-	<div id="footer">
+	<div id="footer" class="navbar navbar-fixed-bottom">
       <div class="container">
         <div class="row">
           <div class="span12">

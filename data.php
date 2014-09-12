@@ -48,8 +48,8 @@
 			
 			$handonnikah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
 										from data_penduduk dp, permintaan_andonnikah an
-										where an.nik=dp.nik   
-										order by an.waktu_antrian desc, an.status desc") or die (mysql_error());
+										where an.nik=dp.nik 
+										order by an.no_registrasi desc") or die (mysql_error());
 			$no = 1;
 				while ($row = mysql_fetch_array($handonnikah) or die (mysql_error())) {
 			
