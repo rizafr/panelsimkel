@@ -101,10 +101,10 @@
             }
         });
         var $container = $("#content");
-        $container.load("full.php");
+        $container.load("grid.php");
         var refreshId = setInterval(function()
         {
-            $container.load('full.php');
+            $container.load('grid.php');
         }, 39000); //5menit
     });
 })(jQuery);
