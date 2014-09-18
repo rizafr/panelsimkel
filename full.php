@@ -1,4 +1,6 @@
 <?php include "koneksi.php" ?>
+<?php include "selisih.php" ?>
+ <?php date_default_timezone_set('Asia/Jakarta'); ?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -23,7 +25,28 @@
       <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
                     <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
 					
-
+<style>
+			.biru {				
+				background: #3498db !important;
+			
+				color: #424251;
+			}
+			
+			.kuning {				
+				background: #FF9326 !important;
+			
+				color: #424251;
+			}
+			
+			.hijau {				
+				background: #3fbf79 !important;
+			
+				color: #424251;
+				
+			}
+			
+			
+</style>   
 
   </head>
   <body>    
@@ -33,27 +56,46 @@
 
         <div id="owl-demo" class="owl-carousel owl-theme">
 		<?php
+			$waktu_sekarang = date("H:i:s");
 			//andonikah
-			$handonnikah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
-										from data_penduduk dp, permintaan_andonnikah an
-										where an.nik=dp.nik   
-										order by an.waktu_antrian desc, an.status desc") or die (mysql_error());
+			$handonnikah = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+											from data_penduduk dp, permintaan_andonnikah an,pengguna p, data_pegawai di
+											where an.nik=dp.nik 
+													and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna
+												or an.proses_oleh = p.id_pengguna)				
+												order by an.no_registrasi desc") or die (mysql_error());
 			$no = 1;
 			while ($row = mysql_fetch_array($handonnikah)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
+			  if($row['status']=='1'){ 
+				$row['status']='Masuk Antrian';
+				$waktu ="Waktu Antri: ". $row['waktu_antrian'];
+				$oleh ="Petugas : ". $row['nama_pegawai'];
+				$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				?>  				
+				<div class="biru">			
+			<?php }else if($row['status']=='2'){ ?>			
+				<div class="kuning">
+				<?php $row['status']='Masih dalam proses';
+						$waktu = "Waktu Proses: ". $row['waktu_proses'];
+						$oleh ="Petugas : ". $row['nama_pegawai'];
+						$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				
+			?>
+			<?php }else if($row['status']=='3'){ ?>	
+					<div class="hijau">
+					<?php		$row['status']='Surat telah selesai';	
+								$waktu = "Waktu  selesai: ". $row['waktu_selesai'];	
+								$lama = $waktu;	
+					 }?>
+					 
+				<p>No Registrasi: <?php echo $row['no_registrasi']?></p>
 				<p><?php echo $row['nik']?></p>
 				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Andon Nikah</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
+				<p>Petugas : <?php echo $row['nama_pegawai']?></p>		
+				<p><?php echo $lama;?></p>		
 			</div>
 		<?php
 			
@@ -64,57 +106,45 @@
 
 
 		<?php
-			//permintaan bersih diri
-			$handonnikah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
-										from data_penduduk dp, permintaan_bd an
-										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
-										order by an.waktu_antrian desc");
-			$no = $no;
-			while ($row = mysql_fetch_array($handonnikah)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
+			$waktu_sekarang = date("H:i:s");
+			//belum menikah
+			$belummenikah = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+											from data_penduduk dp, permintaan_belummenikah an,pengguna p, data_pegawai di
+											where an.nik=dp.nik 
+													and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna
+												or an.proses_oleh = p.id_pengguna)	and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   				
+												order by an.no_registrasi desc") or die (mysql_error());
+			$no = 1;
+			while ($row = mysql_fetch_array($belummenikah)) {
+			  if($row['status']=='1'){ 
+				$row['status']='Masuk Antrian';
+				$waktu ="Waktu Antri: ". $row['waktu_antrian'];
+				$oleh ="Petugas : ". $row['nama_pegawai'];
+				$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				?>  				
+				<div class="biru">			
+			<?php }else if($row['status']=='2'){ ?>			
+				<div class="kuning">
+				<?php $row['status']='Masih dalam proses';
+						$waktu = "Waktu Proses: ". $row['waktu_proses'];
+						$oleh ="Petugas : ". $row['nama_pegawai'];
+						$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				
+			?>
+			<?php }else if($row['status']=='3'){ ?>	
+					<div class="hijau">
+					<?php		$row['status']='Surat telah selesai';	
+								$waktu = "Waktu  selesai: ". $row['waktu_selesai'];	
+								$lama = $waktu;	
+					 }?>
+				<p>No Registrasi: <?php echo $row['no_registrasi']?></p>
 				<p><?php echo $row['nik']?></p>
 				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
-				<p>Surat Permintaan Bersih Diri</p>	
+				<p>Surat Keterangan Belum Menikah</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
-			</div>
-		<?php
-			
-			$no++;
-			}
-			//selesai bersih diri
-		?>
-		
-		<?php
-			//permintaan belummenikah
-			$handonnikah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
-										from data_penduduk dp, permintaan_belummenikah an
-										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
-										order by an.waktu_antrian desc");
-			$no = $no;
-			while ($row = mysql_fetch_array($handonnikah)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
-				<p><?php echo $row['nik']?></p>
-				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
-				<p>Surat Permintaan Bersih Diri</p>	
-				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
+				<p>Petugas : <?php echo $row['nama_pegawai']?></p>		
+				<p><?php echo $lama?></p>		
 			</div>
 		<?php
 			
@@ -124,27 +154,93 @@
 		?>	
 		
 		<?php
-			//permintaan bpr
-			$handonnikah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
-										from data_penduduk dp, permintaan_bpr an
-										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
-										order by an.waktu_antrian desc");
-			$no = $no;
-			while ($row = mysql_fetch_array($handonnikah)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
+			$waktu_sekarang = date("H:i:s");
+			//bd
+			$bd = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+											from data_penduduk dp, permintaan_bd an,pengguna p, data_pegawai di
+											where an.nik=dp.nik 
+													and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna
+												or an.proses_oleh = p.id_pengguna)	and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   				
+												order by an.no_registrasi desc") or die (mysql_error());
+			$no = 1;
+			while ($row = mysql_fetch_array($bd)) {
+			  if($row['status']=='1'){ 
+				$row['status']='Masuk Antrian';
+				$waktu ="Waktu Antri: ". $row['waktu_antrian'];
+				$oleh ="Petugas : ". $row['nama_pegawai'];
+				$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				?>  				
+				<div class="biru">			
+			<?php }else if($row['status']=='2'){ ?>			
+				<div class="kuning">
+				<?php $row['status']='Masih dalam proses';
+						$waktu = "Waktu Proses: ". $row['waktu_proses'];
+						$oleh ="Petugas : ". $row['nama_pegawai'];
+						$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				
+			?>
+			<?php }else if($row['status']=='3'){ ?>	
+					<div class="hijau">
+					<?php		$row['status']='Surat telah selesai';	
+								$waktu = "Waktu  selesai: ". $row['waktu_selesai'];	
+								$lama = $waktu;	
+					 }?>
+				<p>No Registrasi: <?php echo $row['no_registrasi']?></p>
 				<p><?php echo $row['nik']?></p>
 				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
-				<p>Surat Permintaan Belum Punya Rumah</p>	
+				<p>Surat Keterangan Bersih Diri</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
+				<p>Petugas : <?php echo $row['nama_pegawai']?></p>		
+				<p><?php echo $lama?></p>		
+			</div>
+		<?php
+			
+			$no++;
+			}
+			//selesai bd
+		?>	
+		
+		<?php
+			$waktu_sekarang = date("H:i:s");
+			//bpr
+			$bpr = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+											from data_penduduk dp, permintaan_bpr an,pengguna p, data_pegawai di
+											where an.nik=dp.nik 
+													and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna
+												or an.proses_oleh = p.id_pengguna)		and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   			
+												order by an.no_registrasi desc") or die (mysql_error());
+			$no = 1;
+			while ($row = mysql_fetch_array($bpr)) {
+			  if($row['status']=='1'){ 
+				$row['status']='Masuk Antrian';
+				$waktu ="Waktu Antri: ". $row['waktu_antrian'];
+				$oleh ="Petugas : ". $row['nama_pegawai'];
+				$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				?>  				
+				<div class="biru">			
+			<?php }else if($row['status']=='2'){ ?>			
+				<div class="kuning">
+				<?php $row['status']='Masih dalam proses';
+						$waktu = "Waktu Proses: ". $row['waktu_proses'];
+						$oleh ="Petugas : ". $row['nama_pegawai'];
+						$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				
+			?>
+			<?php }else if($row['status']=='3'){ ?>	
+					<div class="hijau">
+					<?php		$row['status']='Surat telah selesai';	
+								$waktu = "Waktu  selesai: ". $row['waktu_selesai'];	
+								$lama = $waktu;	
+					 }?>
+				<p>No Registrasi: <?php echo $row['no_registrasi']?></p>
+				<p><?php echo $row['nik']?></p>
+				<p><h3><?php echo $row['nama']?></h3></p>
+				<p>Surat Keterangan Belum Punya Rumah</p>	
+				<p>"<?php echo $row['status']?>"</p>
+				<p>Petugas : <?php echo $row['nama_pegawai']?></p>		
+				<p><?php echo $lama?></p>		
 			</div>
 		<?php
 			
@@ -152,119 +248,191 @@
 			}
 			//selesai bpr
 		?>	
-
+		
 		<?php
-			//permintaan domisiliparpol
-			$domisiliparpol = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
-										from data_penduduk dp, permintaan_domisili_parpol an
-										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
-										order by an.waktu_antrian desc");
-			$no = $no;
-			while ($row = mysql_fetch_array($domisiliparpol)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
+			$waktu_sekarang = date("H:i:s");
+			//domisili_parpol
+			$domisili_parpol = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+											from data_penduduk dp, permintaan_domisili_parpol an,pengguna p, data_pegawai di
+											where an.nik=dp.nik 
+													and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna
+												or an.proses_oleh = p.id_pengguna)	and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   				
+												order by an.no_registrasi desc") or die (mysql_error());
+			$no = 1;
+			while ($row = mysql_fetch_array($domisili_parpol)) {
+			  if($row['status']=='1'){ 
+				$row['status']='Masuk Antrian';
+				$waktu ="Waktu Antri: ". $row['waktu_antrian'];
+				$oleh ="Petugas : ". $row['nama_pegawai'];
+				$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				?>  				
+				<div class="biru">			
+			<?php }else if($row['status']=='2'){ ?>			
+				<div class="kuning">
+				<?php $row['status']='Masih dalam proses';
+						$waktu = "Waktu Proses: ". $row['waktu_proses'];
+						$oleh ="Petugas : ". $row['nama_pegawai'];
+						$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				
+			?>
+			<?php }else if($row['status']=='3'){ ?>	
+					<div class="hijau">
+					<?php		$row['status']='Surat telah selesai';	
+								$waktu = "Waktu  selesai: ". $row['waktu_selesai'];	
+								$lama = $waktu;	
+					 }?>
+				<p>No Registrasi: <?php echo $row['no_registrasi']?></p>
 				<p><?php echo $row['nik']?></p>
 				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
-				<p>Surat Permintaan Domisili Parpol</p>	
+				<p>Surat Keterangan Domisili Parpol</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
+				<p>Petugas : <?php echo $row['nama_pegawai']?></p>		
+				<p><?php echo $lama ;echo $row['waktu_antrian']	?></p>	
 			</div>
 		<?php
 			
 			$no++;
 			}
-			//selesai domisiliparpol
+			//selesai domisili_parpol
 		?>	
 		
 		<?php
-			//permintaan domisiliperusahaan
-			$domisiliperusahaan = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
-										from data_penduduk dp, permintaan_domisili_perusahaan an
-										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
-										order by an.waktu_antrian desc");
-			$no = $no;
-			while ($row = mysql_fetch_array($domisiliperusahaan)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
+			$waktu_sekarang = date("H:i:s");
+			//domisili_perusahaan
+			$domisili_perusahaan = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+											from data_penduduk dp, permintaan_domisili_perusahaan an,pengguna p, data_pegawai di
+											where an.nik=dp.nik 
+													and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna
+												or an.proses_oleh = p.id_pengguna)	and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   				
+												order by an.no_registrasi desc") or die (mysql_error());
+			$no = 1;
+			while ($row = mysql_fetch_array($domisili_perusahaan)) {
+			  if($row['status']=='1'){ 
+				$row['status']='Masuk Antrian';
+				$waktu ="Waktu Antri: ". $row['waktu_antrian'];
+				$oleh ="Petugas : ". $row['nama_pegawai'];
+				$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				?>  				
+				<div class="biru">			
+			<?php }else if($row['status']=='2'){ ?>			
+				<div class="kuning">
+				<?php $row['status']='Masih dalam proses';
+						$waktu = "Waktu Proses: ". $row['waktu_proses'];
+						$oleh ="Petugas : ". $row['nama_pegawai'];
+						$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				
+			?>
+			<?php }else if($row['status']=='3'){ ?>	
+					<div class="hijau">
+					<?php		$row['status']='Surat telah selesai';	
+								$waktu = "Waktu  selesai: ". $row['waktu_selesai'];	
+								$lama = $waktu;	
+					 }?>
+				<p>No Registrasi: <?php echo $row['no_registrasi']?></p>
 				<p><?php echo $row['nik']?></p>
 				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
-				<p>Surat Permintaan Domisili Parpol</p>	
+				<p>Surat Keterangan Domisili Perusahaan</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
+				<p>Petugas : <?php echo $row['nama_pegawai']?></p>		
+				<p><?php echo $lama?></p>		
 			</div>
 		<?php
 			
 			$no++;
 			}
-			//selesai domisiliperusahaan
-		?>	  
-		
-		<?php
-			//permintaan domisiliyayasan
-			$domisiliyayasan = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
-										from data_penduduk dp, permintaan_domisili_yayasan an
-										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
-										order by an.waktu_antrian desc");
-			$no = $no;
-			while ($row = mysql_fetch_array($domisiliyayasan)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
-				<p><?php echo $row['nik']?></p>
-				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
-				<p>Surat Permintaan Domisili Yayasan</p>	
-				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
-			</div>
-		<?php
-			
-			$no++;
-			}
-			//selesai domisiliyayasan
+			//selesai domisili_perusahaan
 		?>	
 		
 		<?php
-			//permintaan ibadahhaji
-			$ibadahhaji = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
-										from data_penduduk dp, permintaan_ibadahhaji an
-										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
-										order by an.waktu_antrian desc");
-			$no = $no;
+			$waktu_sekarang = date("H:i:s");
+			//domisili_yayasan
+			$domisili_yayasan = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+											from data_penduduk dp, permintaan_domisili_yayasan an,pengguna p, data_pegawai di
+											where an.nik=dp.nik 
+													and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna
+												or an.proses_oleh = p.id_pengguna)	and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   				
+												order by an.no_registrasi desc") or die (mysql_error());
+			$no = 1;
+			while ($row = mysql_fetch_array($domisili_yayasan)) {
+			  if($row['status']=='1'){ 
+				$row['status']='Masuk Antrian';
+				$waktu ="Waktu Antri: ". $row['waktu_antrian'];
+				$oleh ="Petugas : ". $row['nama_pegawai'];
+				$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				?>  				
+				<div class="biru">			
+			<?php }else if($row['status']=='2'){ ?>			
+				<div class="kuning">
+				<?php $row['status']='Masih dalam proses';
+						$waktu = "Waktu Proses: ". $row['waktu_proses'];
+						$oleh ="Petugas : ". $row['nama_pegawai'];
+						$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				
+			?>
+			<?php }else if($row['status']=='3'){ ?>	
+					<div class="hijau">
+					<?php		$row['status']='Surat telah selesai';	
+								$waktu = "Waktu  selesai: ". $row['waktu_selesai'];	
+								$lama = $waktu;	
+					 }?>
+				<p>No Registrasi: <?php echo $row['no_registrasi']?></p>
+				<p><?php echo $row['nik']?></p>
+				<p><h3><?php echo $row['nama']?></h3></p>
+				<p>Surat Keterangan Domisili Yayasan</p>	
+				<p>"<?php echo $row['status']?>"</p>
+				<p>Petugas : <?php echo $row['nama_pegawai']?></p>		
+				<p><?php echo $lama?></p>		
+			</div>
+		<?php
+			
+			$no++;
+			}
+			//selesai domisili_yayasan
+		?>	
+		
+		<?php
+			$waktu_sekarang = date("H:i:s");
+			//ibadahhaji
+			$ibadahhaji = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+											from data_penduduk dp, permintaan_ibadahhaji an,pengguna p, data_pegawai di
+											where an.nik=dp.nik 
+													and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna
+												or an.proses_oleh = p.id_pengguna) and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   					
+												order by an.no_registrasi desc") or die (mysql_error());
+			$no = 1;
 			while ($row = mysql_fetch_array($ibadahhaji)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
+			  if($row['status']=='1'){ 
+				$row['status']='Masuk Antrian';
+				$waktu ="Waktu Antri: ". $row['waktu_antrian'];
+				$oleh ="Petugas : ". $row['nama_pegawai'];
+				$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				?>  				
+				<div class="biru">			
+			<?php }else if($row['status']=='2'){ ?>			
+				<div class="kuning">
+				<?php $row['status']='Masih dalam proses';
+						$waktu = "Waktu Proses: ". $row['waktu_proses'];
+						$oleh ="Petugas : ". $row['nama_pegawai'];
+						$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				
+			?>
+			<?php }else if($row['status']=='3'){ ?>	
+					<div class="hijau">
+					<?php		$row['status']='Surat telah selesai';	
+								$waktu = "Waktu  selesai: ". $row['waktu_selesai'];	
+								$lama = $waktu;	
+					 }?>
+				<p>No Registrasi: <?php echo $row['no_registrasi']?></p>
 				<p><?php echo $row['nik']?></p>
 				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
-				<p>Surat Permintaan Ibadah Haji</p>	
+				<p>Surat Keterangan Ibadah Haji</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
+				<p>Petugas : <?php echo $row['nama_pegawai']?></p>		
+				<p><?php echo $lama?></p>		
 			</div>
 		<?php
 			
@@ -274,334 +442,436 @@
 		?>	
 		
 		<?php
-			//permintaan ibadahhaji
-			$ibadahhaji = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
-										from data_penduduk dp, permintaan_ibadahhaji an
-										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
-										order by an.waktu_antrian desc");
-			$no = $no;
-			while ($row = mysql_fetch_array($ibadahhaji)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
-				<p><?php echo $row['nik']?></p>
-				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
-				<p>Surat Permintaan Ibadah Haji</p>	
-				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
-			</div>
-		<?php
-			
-			$no++;
-			}
-			//selesai ibadahhaji
-		?>	
-		
-		<?php
-			//permintaan ijin keramaian
-			$ik = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
-										from data_penduduk dp, permintaan_ik an
-										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
-										order by an.waktu_antrian desc");
-			$no = $no;
+			$waktu_sekarang = date("H:i:s");
+			//ik
+			$ik = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+											from data_penduduk dp, permintaan_ik an,pengguna p, data_pegawai di
+											where an.nik=dp.nik 
+													and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna
+												or an.proses_oleh = p.id_pengguna)	and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   				
+												order by an.no_registrasi desc") or die (mysql_error());
+			$no = 1;
 			while ($row = mysql_fetch_array($ik)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
+			  if($row['status']=='1'){ 
+				$row['status']='Masuk Antrian';
+				$waktu ="Waktu Antri: ". $row['waktu_antrian'];
+				$oleh ="Petugas : ". $row['nama_pegawai'];
+				$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				?>  				
+				<div class="biru">			
+			<?php }else if($row['status']=='2'){ ?>			
+				<div class="kuning">
+				<?php $row['status']='Masih dalam proses';
+						$waktu = "Waktu Proses: ". $row['waktu_proses'];
+						$oleh ="Petugas : ". $row['nama_pegawai'];
+						$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				
+			?>
+			<?php }else if($row['status']=='3'){ ?>	
+					<div class="hijau">
+					<?php		$row['status']='Surat telah selesai';	
+								$waktu = "Waktu  selesai: ". $row['waktu_selesai'];	
+								$lama = $waktu;	
+					 }?>
+				<p>No Registrasi: <?php echo $row['no_registrasi']?></p>
 				<p><?php echo $row['nik']?></p>
 				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
-				<p>Surat Permintaan Ijin Keramaian</p>	
+				<p>Surat Keterangan Ijin Keramaian</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
+				<p>Petugas : <?php echo $row['nama_pegawai']?></p>		
+				<p><?php echo $lama?></p>		
 			</div>
 		<?php
 			
 			$no++;
 			}
-			//selesai ijin keramaian
+			//selesai ik
 		?>	
 		
 		<?php
-			//permintaan janda
-			$janda = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
-										from data_penduduk dp, permintaan_janda an
-										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
-										order by an.waktu_antrian desc");
-			$no = $no;
+			$waktu_sekarang = date("H:i:s");
+			//janda
+			$janda = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+											from data_penduduk dp, permintaan_janda an,pengguna p, data_pegawai di
+											where an.nik=dp.nik 
+													and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna 
+												or an.proses_oleh = p.id_pengguna)	and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   				
+												order by an.no_registrasi desc") or die (mysql_error());
+			$no = 1;
 			while ($row = mysql_fetch_array($janda)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
+			  if($row['status']=='1'){ 
+				$row['status']='Masuk Antrian';
+				$waktu ="Waktu Antri: ". $row['waktu_antrian'];
+				$oleh ="Petugas : ". $row['nama_pegawai'];
+				$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				?>  				
+				<div class="biru">			
+			<?php }else if($row['status']=='2'){ ?>			
+				<div class="kuning">
+				<?php $row['status']='Masih dalam proses';
+						$waktu = "Waktu Proses: ". $row['waktu_proses'];
+						$oleh ="Petugas : ". $row['nama_pegawai'];
+						$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				
+			?>
+			<?php }else if($row['status']=='3'){ ?>	
+					<div class="hijau">
+					<?php		$row['status']='Surat telah selesai';	
+								$waktu = "Waktu  selesai: ". $row['waktu_selesai'];	
+								$lama = $waktu;	
+					 }?>
+				<p>No Registrasi: <?php echo $row['no_registrasi']?></p>
 				<p><?php echo $row['nik']?></p>
 				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
-				<p>Surat Permintaan Keterangan Janda</p>	
+				<p>Surat Keterangan Janda</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
+				<p>Petugas : <?php echo $row['nama_pegawai']?></p>		
+				<p><?php echo $lama?></p>		
 			</div>
 		<?php
 			
 			$no++;
 			}
 			//selesai janda
-		?>	 
+		?>	
 		
 		<?php
-			//permintaan keterangan tempat usaha
-			$ktu = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
-										from data_penduduk dp, permintaan_keterangan_tempat_usaha an
-										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
-										order by an.waktu_antrian desc");
-			$no = $no;
-			while ($row = mysql_fetch_array($ktu)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
+			$waktu_sekarang = date("H:i:s");
+			//keterangan_tempat_usaha
+			$keterangan_tempat_usaha = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+											from data_penduduk dp, permintaan_keterangan_tempat_usaha an,pengguna p, data_pegawai di
+											where an.nik=dp.nik 
+													and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna
+												or an.proses_oleh = p.id_pengguna)	and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW()) 				
+												order by an.no_registrasi desc") or die (mysql_error());
+			$no = 1;
+			while ($row = mysql_fetch_array($keterangan_tempat_usaha)) {
+			  if($row['status']=='1'){ 
+				$row['status']='Masuk Antrian';
+				$waktu ="Waktu Antri: ". $row['waktu_antrian'];
+				$oleh ="Petugas : ". $row['nama_pegawai'];
+				$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				?>  				
+				<div class="biru">			
+			<?php }else if($row['status']=='2'){ ?>			
+				<div class="kuning">
+				<?php $row['status']='Masih dalam proses';
+						$waktu = "Waktu Proses: ". $row['waktu_proses'];
+						$oleh ="Petugas : ". $row['nama_pegawai'];
+						$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				
+			?>
+			<?php }else if($row['status']=='3'){ ?>	
+					<div class="hijau">
+					<?php		$row['status']='Surat telah selesai';	
+								$waktu = "Waktu  selesai: ". $row['waktu_selesai'];	
+								$lama = $waktu;	
+					 }?>
+				<p>No Registrasi: <?php echo $row['no_registrasi']?></p>
 				<p><?php echo $row['nik']?></p>
 				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
-				<p>Surat Permintaan Keterangan Tempat Usaha</p>	
+				<p>Surat Keterangan Tempat Usaha</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
+				<p>Petugas : <?php echo $row['nama_pegawai']?></p>		
+				<p><?php echo $lama?></p>		
 			</div>
 		<?php
 			
 			$no++;
 			}
-			//selesai keterangan tempat usaha
+			//selesai keterangan_tempat_usaha
 		?>	
 		
 		<?php
-			//permintaan lahir
-			$lahir = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
-										from data_penduduk dp, permintaan_lahir an
-										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
-										order by an.waktu_antrian desc");
-			$no = $no;
+			$waktu_sekarang = date("H:i:s");
+			//lahir
+			$lahir = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+											from data_penduduk dp, permintaan_lahir an,pengguna p, data_pegawai di
+											where an.nik=dp.nik 
+													and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna
+												or an.proses_oleh = p.id_pengguna)		and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW()) 			
+												order by an.no_registrasi desc") or die (mysql_error());
+			$no = 1;
 			while ($row = mysql_fetch_array($lahir)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
+			  if($row['status']=='1'){ 
+				$row['status']='Masuk Antrian';
+				$waktu ="Waktu Antri: ". $row['waktu_antrian'];
+				$oleh ="Petugas : ". $row['nama_pegawai'];
+				$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				?>  				
+				<div class="biru">			
+			<?php }else if($row['status']=='2'){ ?>			
+				<div class="kuning">
+				<?php $row['status']='Masih dalam proses';
+						$waktu = "Waktu Proses: ". $row['waktu_proses'];
+						$oleh ="Petugas : ". $row['nama_pegawai'];
+						$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				
+			?>
+			<?php }else if($row['status']=='3'){ ?>	
+					<div class="hijau">
+					<?php		$row['status']='Surat telah selesai';	
+								$waktu = "Waktu  selesai: ". $row['waktu_selesai'];	
+								$lama = $waktu;	
+					 }?>
+				<p>No Registrasi: <?php echo $row['no_registrasi']?></p>
 				<p><?php echo $row['nik']?></p>
 				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
-				<p>Surat Permintaan Keterangan Lahir</p>	
+				<p>Surat Keterangan Lahir</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
+				<p>Petugas : <?php echo $row['nama_pegawai']?></p>		
+				<p><?php echo $lama?></p>		
 			</div>
 		<?php
 			
 			$no++;
 			}
 			//selesai lahir
-		?>	  
+		?>   
 		
 		<?php
-			//permintaan mati
-			$mati = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
-										from data_penduduk dp, permintaan_mati an
-										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
-										order by an.waktu_antrian desc");
-			$no = $no;
+			$waktu_sekarang = date("H:i:s");
+			//mati
+			$mati = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+											from data_penduduk dp, permintaan_mati an,pengguna p, data_pegawai di
+											where an.nik=dp.nik 
+													and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna
+												or an.proses_oleh = p.id_pengguna)	and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   				
+												order by an.no_registrasi desc") or die (mysql_error());
+			$no = 1;
 			while ($row = mysql_fetch_array($mati)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
+			  if($row['status']=='1'){ 
+				$row['status']='Masuk Antrian';
+				$waktu ="Waktu Antri: ". $row['waktu_antrian'];
+				$oleh ="Petugas : ". $row['nama_pegawai'];
+				$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				?>  				
+				<div class="biru">			
+			<?php }else if($row['status']=='2'){ ?>			
+				<div class="kuning">
+				<?php $row['status']='Masih dalam proses';
+						$waktu = "Waktu Proses: ". $row['waktu_proses'];
+						$oleh ="Petugas : ". $row['nama_pegawai'];
+						$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				
+			?>
+			<?php }else if($row['status']=='3'){ ?>	
+					<div class="hijau">
+					<?php		$row['status']='Surat telah selesai';	
+								$waktu = "Waktu  selesai: ". $row['waktu_selesai'];	
+								$lama = $waktu;	
+					 }?>
+				<p>No Registrasi: <?php echo $row['no_registrasi']?></p>
 				<p><?php echo $row['nik']?></p>
 				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
-				<p>Surat Permintaan Keterangan Mati</p>	
+				<p>Surat Keterangan Kematian</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
+				<p>Petugas : <?php echo $row['nama_pegawai']?></p>		
+				<p><?php echo $lama?></p>		
 			</div>
 		<?php
 			
 			$no++;
 			}
 			//selesai mati
-		?>	   
+		?>	  
 		
 		<?php
-			//permintaan ps
-			$ps = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
-										from data_penduduk dp, permintaan_ps an
-										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
-										order by an.waktu_antrian desc");
-			$no = $no;
+			$waktu_sekarang = date("H:i:s");
+			//ps
+			$ps = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+											from data_penduduk dp, permintaan_ps an,pengguna p, data_pegawai di
+											where an.nik=dp.nik 
+													and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna
+												or an.proses_oleh = p.id_pengguna)	and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   				
+												order by an.no_registrasi desc") or die (mysql_error());
+			$no = 1;
 			while ($row = mysql_fetch_array($ps)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
+			  if($row['status']=='1'){ 
+				$row['status']='Masuk Antrian';
+				$waktu ="Waktu Antri: ". $row['waktu_antrian'];
+				$oleh ="Petugas : ". $row['nama_pegawai'];
+				$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				?>  				
+				<div class="biru">			
+			<?php }else if($row['status']=='2'){ ?>			
+				<div class="kuning">
+				<?php $row['status']='Masih dalam proses';
+						$waktu = "Waktu Proses: ". $row['waktu_proses'];
+						$oleh ="Petugas : ". $row['nama_pegawai'];
+						$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				
+			?>
+			<?php }else if($row['status']=='3'){ ?>	
+					<div class="hijau">
+					<?php		$row['status']='Surat telah selesai';	
+								$waktu = "Waktu  selesai: ". $row['waktu_selesai'];	
+								$lama = $waktu;	
+					 }?>
+				<p>No Registrasi: <?php echo $row['no_registrasi']?></p>
 				<p><?php echo $row['nik']?></p>
 				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
-				<p>Surat Permintaan Pengantar SKCK</p>	
+				<p>Surat Keterangan Pengantar SKCK</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
+				<p>Petugas : <?php echo $row['nama_pegawai']?></p>		
+				<p><?php echo $lama?></p>		
 			</div>
 		<?php
 			
 			$no++;
 			}
 			//selesai ps
-		?>	  
+		?> 
 		
 		<?php
-			//permintaan rumahsakit
-			$rumahsakit = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
-										from data_penduduk dp, permintaan_rumahsakit an
-										where an.nik=dp.nik   
-										order by an.waktu_antrian desc");
-			$no = $no;
+			$waktu_sekarang = date("H:i:s");
+			//rumahsakit
+			$rumahsakit = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+											from data_penduduk dp, permintaan_rumahsakit an,pengguna p, data_pegawai di
+											where an.nik=dp.nik 
+													and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna
+												or an.proses_oleh = p.id_pengguna)	and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   				
+												order by an.no_registrasi desc") or die (mysql_error());
+			$no = 1;
 			while ($row = mysql_fetch_array($rumahsakit)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
+			  if($row['status']=='1'){ 
+				$row['status']='Masuk Antrian';
+				$waktu ="Waktu Antri: ". $row['waktu_antrian'];
+				$oleh ="Petugas : ". $row['nama_pegawai'];
+				$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				?>  				
+				<div class="biru">			
+			<?php }else if($row['status']=='2'){ ?>			
+				<div class="kuning">
+				<?php $row['status']='Masih dalam proses';
+						$waktu = "Waktu Proses: ". $row['waktu_proses'];
+						$oleh ="Petugas : ". $row['nama_pegawai'];
+						$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				
+			?>
+			<?php }else if($row['status']=='3'){ ?>	
+					<div class="hijau">
+					<?php		$row['status']='Surat telah selesai';	
+								$waktu = "Waktu  selesai: ". $row['waktu_selesai'];	
+								$lama = $waktu;	
+					 }?>
+				<p>No Registrasi: <?php echo $row['no_registrasi']?></p>
 				<p><?php echo $row['nik']?></p>
 				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
-				<p>Surat Permintaan Rumah Sakit</p>	
+				<p>Surat Keterangan SKTM Rumah Sakit</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
+				<p>Petugas : <?php echo $row['nama_pegawai']?></p>		
+				<p><?php echo $lama?></p>		
 			</div>
 		<?php
 			
 			$no++;
 			}
 			//selesai rumahsakit
-		?>	 
+		?> 
 		
 		<?php
-			//permintaan sekolah
-			$sekolah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
-										from data_penduduk dp, permintaan_sekolah an
-										where an.nik=dp.nik 
-										order by an.waktu_antrian desc");
-			$no = $no;
+			$waktu_sekarang = date("H:i:s");
+			//sekolah
+			$sekolah = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+											from data_penduduk dp, permintaan_sekolah an,pengguna p, data_pegawai di
+											where an.nik=dp.nik 
+													and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna
+												or an.proses_oleh = p.id_pengguna)	and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   				
+												order by an.no_registrasi desc") or die (mysql_error());
+			$no = 1;
 			while ($row = mysql_fetch_array($sekolah)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
+			  if($row['status']=='1'){ 
+				$row['status']='Masuk Antrian';
+				$waktu ="Waktu Antri: ". $row['waktu_antrian'];
+				$oleh ="Petugas : ". $row['nama_pegawai'];
+				$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				?>  				
+				<div class="biru">			
+			<?php }else if($row['status']=='2'){ ?>			
+				<div class="kuning">
+				<?php $row['status']='Masih dalam proses';
+						$waktu = "Waktu Proses: ". $row['waktu_proses'];
+						$oleh ="Petugas : ". $row['nama_pegawai'];
+						$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				
+			?>
+			<?php }else if($row['status']=='3'){ ?>	
+					<div class="hijau">
+					<?php		$row['status']='Surat telah selesai';	
+								$waktu = "Waktu  selesai: ". $row['waktu_selesai'];	
+								$lama = $waktu;	
+					 }?>
+				<p>No Registrasi: <?php echo $row['no_registrasi']?></p>
 				<p><?php echo $row['nik']?></p>
 				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
-				<p>Surat Permintaan Sekolah</p>	
+				<p>Surat Keterangan SKTM Sekolah</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
+				<p>Petugas : <?php echo $row['nama_pegawai']?></p>		
+				<p><?php echo $lama?></p>		
 			</div>
 		<?php
 			
 			$no++;
 			}
 			//selesai sekolah
-		?>	 
+		?> 
 		
 		<?php
-			//permintaan serbaguna
-			$serbaguna = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
-										from data_penduduk dp, permintaan_serbaguna an
-										where an.nik=dp.nik    
-										order by an.waktu_antrian desc");
-			$no = $no;
+			$waktu_sekarang = date("H:i:s");
+			//serbaguna
+			$serbaguna = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+											from data_penduduk dp, permintaan_serbaguna an,pengguna p, data_pegawai di
+											where an.nik=dp.nik 
+													and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna
+												or an.proses_oleh = p.id_pengguna)	and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   				
+												order by an.no_registrasi desc") or die (mysql_error());
+			$no = 1;
 			while ($row = mysql_fetch_array($serbaguna)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
+			  if($row['status']=='1'){ 
+				$row['status']='Masuk Antrian';
+				$waktu ="Waktu Antri: ". $row['waktu_antrian'];
+				$oleh ="Petugas : ". $row['nama_pegawai'];
+				$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				?>  				
+				<div class="biru">			
+			<?php }else if($row['status']=='2'){ ?>			
+				<div class="kuning">
+				<?php $row['status']='Masih dalam proses';
+						$waktu = "Waktu Proses: ". $row['waktu_proses'];
+						$oleh ="Petugas : ". $row['nama_pegawai'];
+						$lama = "Sudah menunggu: " .selisih($row['waktu_antrian'],$waktu_sekarang);	
+				
+			?>
+			<?php }else if($row['status']=='3'){ ?>	
+					<div class="hijau">
+					<?php		$row['status']='Surat telah selesai';	
+								$waktu = "Waktu  selesai: ". $row['waktu_selesai'];	
+								$lama = $waktu;	
+					 }?>
+				<p>No Registrasi: <?php echo $row['no_registrasi']?></p>
 				<p><?php echo $row['nik']?></p>
 				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
-				<p>Surat Permintaan Serbaguna</p>	
+				<p>Surat Keterangan SKTM Sekolah</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
+				<p>Petugas : <?php echo $row['nama_pegawai']?></p>		
+				<p><?php echo $lama?></p>		
 			</div>
 		<?php
 			
 			$no++;
 			}
-			//selesai serbaguna
-		?>	
-		
-		<?php
-			//permintaan waris
-			$waris = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
-										from data_penduduk dp, permintaan_waris an
-										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
-										order by an.waktu_antrian desc");
-			$no = $no;
-			while ($row = mysql_fetch_array($waris)) {
-			if($row['status']=='0'){
-				$row['status']='Masih Dalam Proses';?>  				
-				<div class="proses">			
-			<?php }else{ ?>			
-				<div class="selesai">
-				<?php $row['status']='Sudah Diproses'; }
-			
-			echo $no; ?>
-				<p><?php echo $row['nik']?></p>
-				<p><h3><?php echo $row['nama']?></h3></p>
-				<address><?php echo $row['alamat']?></address>
-				<p>Surat Permintaan Waris</p>	
-				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
-			</div>
-		<?php
-			
-			$no++;
-			}
-			//selesai waris
-		?>	       
+			//selesai sekolah
+		?>     
 
         </div>
 
@@ -630,7 +900,7 @@
 		height: 20px;
 		background: #3fbf79;
 	}
-    #owl-demo .proses{
+    #owl-demo .biru{
         background: #3498db;
         padding: 25px 0px;
         margin: 5px;
@@ -643,7 +913,21 @@
 		-webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
 		box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
     }
-	#owl-demo .selesai{
+	
+	#owl-demo .kuning{
+        background: #FF9326;
+        padding: 25px 0px;
+        margin: 5px;
+        color: #FFF;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        text-align: center;
+		-moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+		-webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+		box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    }
+	#owl-demo .hijau{
         background: #3fbf79;
         padding: 25px 0px;
         margin: 5px;
@@ -664,7 +948,7 @@
     <script>
     $(document).ready(function() {
       $("#owl-demo").owlCarousel({
-		items : 5,
+		items : 4,
 		autoPlay: true
       });
     });
