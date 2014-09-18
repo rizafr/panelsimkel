@@ -23,80 +23,10 @@
       <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
                     <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
 					
-					<script type="text/javascript">
-    //set timezone
-    <?php date_default_timezone_set('Asia/Jakarta'); ?>
-    //buat object date berdasarkan waktu di server
-    var serverTime = new Date(<?php print date('Y, m, d, H, i, s, 0'); ?>);
-    //buat object date berdasarkan waktu di client
-    var clientTime = new Date();
-    //hitung selisih
-    var Diff = serverTime.getTime() - clientTime.getTime();    
-    //fungsi displayTime yang dipanggil di bodyOnLoad dieksekusi tiap 1000ms = 1detik
-    function displayServerTime(){
-        //buat object date berdasarkan waktu di client
-        var clientTime = new Date();
-        //buat object date dengan menghitung selisih waktu client dan server
-        var time = new Date(clientTime.getTime() + Diff);
-        //ambil nilai jam
-        var sh = time.getHours().toString();
-        //ambil nilai menit
-        var sm = time.getMinutes().toString();
-        //ambil nilai detik
-        var ss = time.getSeconds().toString();
-        //tampilkan jam:menit:detik dengan menambahkan angka 0 jika angkanya cuma satu digit (0-9)
-        document.getElementById("clock").innerHTML = (sh.length==1?"0"+sh:sh) + ":" + (sm.length==1?"0"+sm:sm) + ":" + (ss.length==1?"0"+ss:ss);
-    }
-</script>
-<?php 
-//Format Tanggal Berbahasa Indonesia 
 
-// Array Hari
-$array_hari = array(1=>'Senin','Selasa','Rabu','Kamis','Jumat', 'Sabtu','Minggu');
-$hari = $array_hari[date('N')];
-
-//Format Tanggal 
-$tanggal = date ('j');
-
-//Array Bulan 
-$array_bulan = array(1=>'Januari','Februari','Maret', 'April', 'Mei', 'Juni','Juli','Agustus','September','Oktober', 'November','Desember'); 
-$bulan = $array_bulan[date('n')];
- 
-//Format Tahun 
-$tahun = date('Y');
-?>
 
   </head>
-  <body>
-
-      <div id="top-nav" class="navbar navbar-fixed-top">
-        <div class="navbar-inner">
-          <div class="container">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-            <div class="nav-collapse collapse">
-            <ul class="nav pull-right">
-              <?php echo $hari . "," ." ". $tanggal ." ". $bulan ." ". $tahun; ?> | <span id="clock"> <?php print date('H:i:s'); ?></span> 
-            </ul>
-            <ul class="nav pull-left">
-            <img id="logo" src="images/cimahi.png" height="30px" width="30px"/> Sistem Informasi Manajemen <span>Kelurahan Leuwi Gajah</span> 
-            </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    <div id="title">
-      <div class="container">
-        <div class="row">
-          <div class="span12">
-            <h1 class="hero-unit"> Selamat Datang di Kelurahan Leuwi Gajah</h1>
-          </div>
-        </div>
-      </div>
-    </div>
+  <body>    
    
 
       <div id="demo">
@@ -104,10 +34,10 @@ $tahun = date('Y');
         <div id="owl-demo" class="owl-carousel owl-theme">
 		<?php
 			//andonikah
-			$handonnikah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$handonnikah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
 										from data_penduduk dp, permintaan_andonnikah an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik   
+										order by an.waktu_antrian desc, an.status desc") or die (mysql_error());
 			$no = 1;
 			while ($row = mysql_fetch_array($handonnikah)) {
 			if($row['status']=='0'){
@@ -123,7 +53,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Andon Nikah</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -135,10 +65,10 @@ $tahun = date('Y');
 
 		<?php
 			//permintaan bersih diri
-			$handonnikah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$handonnikah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
 										from data_penduduk dp, permintaan_bd an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
+										order by an.waktu_antrian desc");
 			$no = $no;
 			while ($row = mysql_fetch_array($handonnikah)) {
 			if($row['status']=='0'){
@@ -154,7 +84,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Bersih Diri</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -165,10 +95,10 @@ $tahun = date('Y');
 		
 		<?php
 			//permintaan belummenikah
-			$handonnikah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$handonnikah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
 										from data_penduduk dp, permintaan_belummenikah an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
+										order by an.waktu_antrian desc");
 			$no = $no;
 			while ($row = mysql_fetch_array($handonnikah)) {
 			if($row['status']=='0'){
@@ -184,7 +114,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Bersih Diri</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -195,10 +125,10 @@ $tahun = date('Y');
 		
 		<?php
 			//permintaan bpr
-			$handonnikah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$handonnikah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
 										from data_penduduk dp, permintaan_bpr an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
+										order by an.waktu_antrian desc");
 			$no = $no;
 			while ($row = mysql_fetch_array($handonnikah)) {
 			if($row['status']=='0'){
@@ -214,7 +144,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Belum Punya Rumah</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -225,10 +155,10 @@ $tahun = date('Y');
 
 		<?php
 			//permintaan domisiliparpol
-			$domisiliparpol = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$domisiliparpol = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
 										from data_penduduk dp, permintaan_domisili_parpol an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
+										order by an.waktu_antrian desc");
 			$no = $no;
 			while ($row = mysql_fetch_array($domisiliparpol)) {
 			if($row['status']=='0'){
@@ -244,7 +174,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Domisili Parpol</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -255,10 +185,10 @@ $tahun = date('Y');
 		
 		<?php
 			//permintaan domisiliperusahaan
-			$domisiliperusahaan = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$domisiliperusahaan = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
 										from data_penduduk dp, permintaan_domisili_perusahaan an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
+										order by an.waktu_antrian desc");
 			$no = $no;
 			while ($row = mysql_fetch_array($domisiliperusahaan)) {
 			if($row['status']=='0'){
@@ -274,7 +204,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Domisili Parpol</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -285,10 +215,10 @@ $tahun = date('Y');
 		
 		<?php
 			//permintaan domisiliyayasan
-			$domisiliyayasan = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$domisiliyayasan = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
 										from data_penduduk dp, permintaan_domisili_yayasan an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
+										order by an.waktu_antrian desc");
 			$no = $no;
 			while ($row = mysql_fetch_array($domisiliyayasan)) {
 			if($row['status']=='0'){
@@ -304,7 +234,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Domisili Yayasan</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -315,10 +245,10 @@ $tahun = date('Y');
 		
 		<?php
 			//permintaan ibadahhaji
-			$ibadahhaji = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$ibadahhaji = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
 										from data_penduduk dp, permintaan_ibadahhaji an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
+										order by an.waktu_antrian desc");
 			$no = $no;
 			while ($row = mysql_fetch_array($ibadahhaji)) {
 			if($row['status']=='0'){
@@ -334,7 +264,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Ibadah Haji</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -345,10 +275,10 @@ $tahun = date('Y');
 		
 		<?php
 			//permintaan ibadahhaji
-			$ibadahhaji = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$ibadahhaji = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
 										from data_penduduk dp, permintaan_ibadahhaji an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
+										order by an.waktu_antrian desc");
 			$no = $no;
 			while ($row = mysql_fetch_array($ibadahhaji)) {
 			if($row['status']=='0'){
@@ -364,7 +294,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Ibadah Haji</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -375,10 +305,10 @@ $tahun = date('Y');
 		
 		<?php
 			//permintaan ijin keramaian
-			$ik = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$ik = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
 										from data_penduduk dp, permintaan_ik an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
+										order by an.waktu_antrian desc");
 			$no = $no;
 			while ($row = mysql_fetch_array($ik)) {
 			if($row['status']=='0'){
@@ -394,7 +324,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Ijin Keramaian</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -405,10 +335,10 @@ $tahun = date('Y');
 		
 		<?php
 			//permintaan janda
-			$janda = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$janda = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
 										from data_penduduk dp, permintaan_janda an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
+										order by an.waktu_antrian desc");
 			$no = $no;
 			while ($row = mysql_fetch_array($janda)) {
 			if($row['status']=='0'){
@@ -424,7 +354,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Keterangan Janda</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -435,10 +365,10 @@ $tahun = date('Y');
 		
 		<?php
 			//permintaan keterangan tempat usaha
-			$ktu = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$ktu = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
 										from data_penduduk dp, permintaan_keterangan_tempat_usaha an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
+										order by an.waktu_antrian desc");
 			$no = $no;
 			while ($row = mysql_fetch_array($ktu)) {
 			if($row['status']=='0'){
@@ -454,7 +384,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Keterangan Tempat Usaha</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -465,10 +395,10 @@ $tahun = date('Y');
 		
 		<?php
 			//permintaan lahir
-			$lahir = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$lahir = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
 										from data_penduduk dp, permintaan_lahir an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
+										order by an.waktu_antrian desc");
 			$no = $no;
 			while ($row = mysql_fetch_array($lahir)) {
 			if($row['status']=='0'){
@@ -484,7 +414,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Keterangan Lahir</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -495,10 +425,10 @@ $tahun = date('Y');
 		
 		<?php
 			//permintaan mati
-			$mati = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$mati = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
 										from data_penduduk dp, permintaan_mati an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
+										order by an.waktu_antrian desc");
 			$no = $no;
 			while ($row = mysql_fetch_array($mati)) {
 			if($row['status']=='0'){
@@ -514,7 +444,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Keterangan Mati</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -525,10 +455,10 @@ $tahun = date('Y');
 		
 		<?php
 			//permintaan ps
-			$ps = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$ps = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
 										from data_penduduk dp, permintaan_ps an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
+										order by an.waktu_antrian desc");
 			$no = $no;
 			while ($row = mysql_fetch_array($ps)) {
 			if($row['status']=='0'){
@@ -544,7 +474,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Pengantar SKCK</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -555,10 +485,10 @@ $tahun = date('Y');
 		
 		<?php
 			//permintaan rumahsakit
-			$rumahsakit = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$rumahsakit = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
 										from data_penduduk dp, permintaan_rumahsakit an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik   
+										order by an.waktu_antrian desc");
 			$no = $no;
 			while ($row = mysql_fetch_array($rumahsakit)) {
 			if($row['status']=='0'){
@@ -574,7 +504,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Rumah Sakit</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -585,10 +515,10 @@ $tahun = date('Y');
 		
 		<?php
 			//permintaan sekolah
-			$sekolah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$sekolah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
 										from data_penduduk dp, permintaan_sekolah an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik 
+										order by an.waktu_antrian desc");
 			$no = $no;
 			while ($row = mysql_fetch_array($sekolah)) {
 			if($row['status']=='0'){
@@ -604,7 +534,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Sekolah</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -615,10 +545,10 @@ $tahun = date('Y');
 		
 		<?php
 			//permintaan serbaguna
-			$serbaguna = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$serbaguna = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
 										from data_penduduk dp, permintaan_serbaguna an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik    
+										order by an.waktu_antrian desc");
 			$no = $no;
 			while ($row = mysql_fetch_array($serbaguna)) {
 			if($row['status']=='0'){
@@ -634,7 +564,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Serbaguna</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -645,10 +575,10 @@ $tahun = date('Y');
 		
 		<?php
 			//permintaan waris
-			$waris = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.dibuat_oleh, DATE_FORMAT(an.tgl_dibuat,'%d') as tgl_dibuat 
+			$waris = mysql_query("select dp.nik,dp.nama,dp.alamat,an.status,an.antrian_oleh, DATE_FORMAT(an.waktu_antrian,'%d') as waktu_antrian 
 										from data_penduduk dp, permintaan_waris an
-										where an.nik=dp.nik and DATE_FORMAT(an.tgl_dibuat,'%d') = DAY(NOW())    
-										order by an.tgl_dibuat desc");
+										where an.nik=dp.nik and DATE_FORMAT(an.waktu_antrian,'%d') = DAY(NOW())    
+										order by an.waktu_antrian desc");
 			$no = $no;
 			while ($row = mysql_fetch_array($waris)) {
 			if($row['status']=='0'){
@@ -664,7 +594,7 @@ $tahun = date('Y');
 				<address><?php echo $row['alamat']?></address>
 				<p>Surat Permintaan Waris</p>	
 				<p>"<?php echo $row['status']?>"</p>
-				<p>Petugas : <?php echo $row['dibuat_oleh']?></p>		
+				<p>Petugas : <?php echo $row['antrian_oleh']?></p>		
 			</div>
 		<?php
 			
@@ -676,37 +606,6 @@ $tahun = date('Y');
         </div>
 
     </div>  
-`	
-	
-	
-	
-	<div id="footer" class="navbar navbar-fixed-bottom">
-      <div class="container">
-        <div class="row">
-          <div class="span12">
-		  <table>
-			<tr>
-				<td><div id="biru">&nbsp;</td>
-				<td>&nbsp;:&nbsp;</td>
-				<td>Antrian</td>
-				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-				<td><div id="kuning">&nbsp;</td>
-				<td>&nbsp;:&nbsp;</td>
-				<td>Dalam Proses</td>
-				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-				<td><div id="hijau">&nbsp;</td>
-				<td>&nbsp;:&nbsp;</td>
-				<td>Sudah disetujui</td>
-			</tr>
-		  </table>
-						
-            <h5>Sistem Informasi Manajemen Kelurahan Pemerintah Kota Cimahi 2014
-            </h5>
-          </div>
-        </div>
-      </div>
-    </div>
-	
 
     <script src="../assets/js/jquery-1.9.1.min.js"></script> 
     <script src="../owl-carousel/owl.carousel.js"></script>
@@ -765,7 +664,7 @@ $tahun = date('Y');
     <script>
     $(document).ready(function() {
       $("#owl-demo").owlCarousel({
-		items : 3,
+		items : 5,
 		autoPlay: true
       });
     });

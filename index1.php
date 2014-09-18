@@ -114,11 +114,10 @@
             }
         });
         var $container = $("#content");
-        $container.load("table.php");
+        $container.load("full.php");
         var refreshId = setInterval(function()
         {
-            $container.load('table.php');
-
+            $container.load('full.php');
         }, 39000); //5menit
     });
 })(jQuery);
@@ -139,7 +138,7 @@
               <?php echo $hari . "," ." ". $tanggal ." ". $bulan ." ". $tahun; ?> | <span id="clock"> <?php print date('H:i:s'); ?></span> 
             </ul>
             <ul class="nav pull-left">
-            <img id="logo" src="images/cimahi.png" height="30px" width="30px"/> Sistem Informasi Manajemen Kinerja <span>Kelurahan Leuwigajah</span> 
+            <img id="logo" src="images/cimahi.png" height="30px" width="30px"/> Sistem Informasi Manajemen <span>Kelurahan Leuwigajah</span> 
             </ul>
             </div>
           </div>
@@ -151,7 +150,7 @@
           <div class="span12">
             <h1 class="hero-unit"> Selamat Datang di Kelurahan Leuwigajah</h1>
 			Keterangan:
-			<table class="kosong">
+			<table>
 			<tr>
 				<td width="30px;"><div class="biru">&nbsp;</td>
 				<td>&nbsp;:&nbsp;</td>
@@ -176,18 +175,35 @@
  <div class="container-fluid">
 	<div class="row">
 		
-		<div class="span12">
+		<!--<div class="span12"> -->
 			<div id="content"></div>
 			<img src="loader.gif" id="loading fade-in.three" alt="loading" style="display:none;" />
-		</div> 
+	<!--<	</div>  -->
+		<!--<div class="span3">
+			<p> .: DAFTAR NAMA WARGA:.</p> 		
+			<?php $handonnikah = mysql_query("select dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+										from data_penduduk dp, permintaan_andonnikah an
+										where an.nik=dp.nik   
+										order by an.waktu_antrian desc, an.status desc limit 3") or die (mysql_error());
+			$no = 1;
+				while ($row = mysql_fetch_array($handonnikah) or die (mysql_error())) {
+			
+			?> 
 		
+						<br />Nomor Registrasi : <b><?php echo $row['no_registrasi']?></b>
+						<br /><b><?php echo $row['nama']?></b>
+						<br /><?php echo $row['alamat']?>
+						<br />Surat Permintaan Andon Nikah<br />
+		<?php }?>			
+			
+		</div>-->
 	</div>
 </div>
 	
 	
 	
 	<!--isi footer !-->
-	<div id="footer" class="navbar navbar-fixed-bottom">
+	<div id="footer">
       <div class="container">
         <div class="row">
           <div class="span12">

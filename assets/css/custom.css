@@ -105,13 +105,43 @@ pre.pre-show{
 padding: 8px 12px;
 }
 
+
 /* Footer */
 
 #footer{
-	padding: 20px 0px;
-	/*background: #f3f3f3;*/
-	text-align: center
+	padding: 3px 0px;
+	border-top: 3px solid #CACAD9; 
+	background-color: #EEEEEE;
+	-webkit-transition: background-color 200ms ease;
+	-moz-transition: background-color 200ms ease;
+	-o-transition: background-color 200ms ease;
+	transition: background-color 200ms ease;
+	text-align: center;
+	filter: Alpha(Opacity=50);/*IE7 fix*/
 }
+/* Animasi + Prefix untuk browser */
+	@-webkit-keyframes color {
+	    0% { background-color: #f1c40f; }
+	    32% { background-color: #e74c3c; }
+	    55% { background-color: #9b59b6; }
+	    76% { background-color: #16a085; }
+	    100% { background-color: #2ecc71; }
+	}
+	@-moz-keyframes color {
+	     0% { background-color: #f1c40f; }
+	    32% { background-color: #e74c3c; }
+	    55% { background-color: #9b59b6; }
+	    76% { background-color: #16a085; }
+	    100% { background-color: #2ecc71; }
+	}
+	@keyframes color {
+	  0% { background-color: #f1c40f; }
+	    32% { background-color: #e74c3c; }
+	    55% { background-color: #9b59b6; }
+	    76% { background-color: #16a085; }
+	    100% { background-color: #2ecc71; }
+	}
+
 .twitter-share-button{
 	top: 4px;
 	position: relative;
