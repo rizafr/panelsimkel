@@ -67,6 +67,6 @@
 			if( strlen($c_hour) == 1) $c_hour = '0'.$c_hour;
 			
 			/* Return result */
-			return $c_hour . ' jam ' . $c_minutes . ' minute ' . $c_seconds. ' detik ';
+			return $c_hour . ':' . $c_minutes . ':' . $c_seconds;
 		}
 ?>

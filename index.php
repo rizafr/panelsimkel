@@ -172,9 +172,8 @@
     </div>
 	
  <!--isi konten !-->
- <div class="container-fluid">
-	<div class="row">
-		
+ <div class="container">
+	<div class="row">		
 		<div class="span12">
 			<div id="content"></div>
 			<img src="loader.gif" id="loading fade-in.three" alt="loading" style="display:none;" />
@@ -190,7 +189,14 @@
       <div class="container">
         <div class="row">
           <div class="span12">
-          <p><marquee align="center" direction="left" scrollmount="3" > .:Sistem Informasi Manajemen Kelurahan Pemerintah Kota Cimahi 2014:. </marquee> 
+          <p><marquee align="center" direction="left" scrollmount="3" >
+		  
+			<?php 
+			$berita = mysql_query("select * from berita order by judul_berita asc") or die (mysql_error());			
+			while ($row = mysql_fetch_array($berita)) {
+			   echo$row['judul_berita'];
+			   echo " ".$row['isi_berita'] ." | ";
+				}?></marquee> 
             </p>
           </div>
         </div>
