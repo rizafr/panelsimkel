@@ -87,7 +87,7 @@
 				
 			?>
 			<?php }else if($row['status']=='3'){ ?>	
-					<div class="hijau">
+					<div class="hijau">						
 					<?php		$row['status']='Surat telah selesai';	
 								$waktu = "Waktu  selesai: <br /><h4>". $row['waktu_selesai']."</h4>";	
 								$lama = $waktu;	
@@ -978,7 +978,27 @@
     });
 
     </script>
+	<script type="text/javascript"> 
+      $(document).ready( function() {
+        $('.hijau').delay(5000).fadeOut();
+      });
+	  
+	// $('html').addClass('js');
 
+	// $(function() {
+
+		  // var timer = setInterval( showDiv, 20000); //2o detik
+
+		 // jam = document.getElementByClass('hijau');
+
+		  // function showDiv() {   
+
+			 // $('.hijau').fadeOut();
+
+		  // }
+
+	// });
+    </script>
     
 
     <script src="../assets/js/bootstrap-collapse.js"></script>

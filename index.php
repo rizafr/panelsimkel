@@ -2,7 +2,7 @@
 <?php include "koneksi.php"?>
 <html>
 <head>
-	<title>Sistem Informasi Manajemen Kelurahan Leuwi Gajah</title>
+	<title>Sistem Informasi Manajemen Kinerja Kelurahan Leuwi Gajah</title>
 	  <meta charset="utf-8">
 	<!-- For ease i'm just using a JQuery version hosted by JQuery- you can download any version and link to it locally -->
 		<meta name="description" content="Sistem Informasi Manajemen Kelurahan" />
@@ -14,6 +14,7 @@
 		<link rel="stylesheet" type="text/css" href="css/component.css" />
 		<script type="text/javascript" src="js/jquery.js"></script>
 		<script type="text/javascript" src="js/easySlider1.7.js"></script>
+		<script type="text/javascript" src="js/jam.js"></script>
 		<script src="js/modernizr.custom.js"></script>
 		<link href="../assets/css/bootstrapTheme.css" rel="stylesheet">
 		<link href="../assets/css/custom.css" rel="stylesheet">	
@@ -119,7 +120,7 @@
         {
             $container.load('full.php');
 
-        }, 39000); //5menit
+        }, 59000); //5menit
     });
 })(jQuery);
 </script>
