@@ -113,7 +113,7 @@
 											where an.nik=dp.nik 
 													and p.id_data_pegawai = di.id_data_pegawai
 											and (an.antrian_oleh = p.id_pengguna
-												or an.proses_oleh = p.id_pengguna)	and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   				
+												or an.proses_oleh = p.id_pengguna)  				
 												order by an.no_registrasi desc") or die (mysql_error());
 			$no = 1;
 			while ($row = mysql_fetch_array($belummenikah)) {
@@ -161,7 +161,7 @@
 											where an.nik=dp.nik 
 													and p.id_data_pegawai = di.id_data_pegawai
 											and (an.antrian_oleh = p.id_pengguna
-												or an.proses_oleh = p.id_pengguna)	and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   				
+												or an.proses_oleh = p.id_pengguna)	 				
 												order by an.no_registrasi desc") or die (mysql_error());
 			$no = 1;
 			while ($row = mysql_fetch_array($bd)) {
@@ -948,7 +948,7 @@
     <script>
     $(document).ready(function() {
       $("#owl-demo").owlCarousel({
-		items : 4,
+		items : 5,
 		autoPlay: true
       });
     });
