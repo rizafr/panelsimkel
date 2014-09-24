@@ -2,7 +2,7 @@
 <?php include "koneksi.php"?>
 <html>
 <head>
-	<title>Sistem Informasi Manajemen Kelurahan Leuwi Gajah</title>
+	<title>Sistem Informasi Manajemen Kinerja Kelurahan Leuwi Gajah</title>
 	  <meta charset="utf-8">
 	<!-- For ease i'm just using a JQuery version hosted by JQuery- you can download any version and link to it locally -->
 		<meta name="description" content="Sistem Informasi Manajemen Kelurahan" />
@@ -14,6 +14,7 @@
 		<link rel="stylesheet" type="text/css" href="css/component.css" />
 		<script type="text/javascript" src="js/jquery.js"></script>
 		<script type="text/javascript" src="js/easySlider1.7.js"></script>
+		<script type="text/javascript" src="js/jam.js"></script>
 		<script src="js/modernizr.custom.js"></script>
 		<link href="../assets/css/bootstrapTheme.css" rel="stylesheet">
 		<link href="../assets/css/custom.css" rel="stylesheet">	
@@ -119,7 +120,7 @@
         {
             $container.load('full.php');
 
-        }, 39000); //5menit
+        }, 59000); //5menit
     });
 })(jQuery);
 </script>
@@ -172,9 +173,8 @@
     </div>
 	
  <!--isi konten !-->
- <div class="container-fluid">
-	<div class="row">
-		
+ <div class="container">
+	<div class="row">		
 		<div class="span12">
 			<div id="content"></div>
 			<img src="loader.gif" id="loading fade-in.three" alt="loading" style="display:none;" />
@@ -190,7 +190,14 @@
       <div class="container">
         <div class="row">
           <div class="span12">
-          <p><marquee align="center" direction="left" scrollmount="3" > .:Sistem Informasi Manajemen Kelurahan Pemerintah Kota Cimahi 2014:. </marquee> 
+          <p><marquee align="center" direction="left" scrollmount="3" >
+		  
+			<?php 
+			$berita = mysql_query("select * from berita order by judul_berita asc") or die (mysql_error());			
+			while ($row = mysql_fetch_array($berita)) {
+			   echo$row['judul_berita'];
+			   echo " ".$row['isi_berita'] ." | ";
+				}?></marquee> 
             </p>
           </div>
         </div>

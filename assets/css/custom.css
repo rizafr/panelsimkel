@@ -111,13 +111,14 @@ padding: 8px 12px;
 #footer{
 	padding: 3px 0px;
 	border-top: 3px solid #CACAD9; 
-	background-color: #EEEEEE;
+	background-color: #FDFDFF;
 	-webkit-transition: background-color 200ms ease;
 	-moz-transition: background-color 200ms ease;
 	-o-transition: background-color 200ms ease;
 	transition: background-color 200ms ease;
 	text-align: center;
 	filter: Alpha(Opacity=50);/*IE7 fix*/
+	font-size: 18px;
 }
 /* Animasi + Prefix untuk browser */
 	@-webkit-keyframes color {
