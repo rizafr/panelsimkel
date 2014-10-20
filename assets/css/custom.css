@@ -109,7 +109,8 @@ padding: 8px 12px;
 /* Footer */
 
 #footer{
-	padding: 3px 0px;
+	padding: 10px 10px;
+	height: 65px;
 	border-top: 3px solid #CACAD9; 
 	background-color: #FDFDFF;
 	-webkit-transition: background-color 200ms ease;
@@ -118,7 +119,7 @@ padding: 8px 12px;
 	transition: background-color 200ms ease;
 	text-align: center;
 	filter: Alpha(Opacity=50);/*IE7 fix*/
-	font-size: 18px;
+	font-size: 30px;
 }
 /* Animasi + Prefix untuk browser */
 	@-webkit-keyframes color {
