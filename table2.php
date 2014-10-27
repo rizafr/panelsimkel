@@ -45,8 +45,8 @@
 		text-align: center;
 		line-height:40px;
 		color : #020202;
-		border-bottom: 2px solid #ddd;
-		border-top: 2px solid #ddd;
+		border-bottom: 1px solid #C9B8AD;
+		border-top: 1px solid #C9B8AD;
 	}
 	
 	b
