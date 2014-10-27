@@ -90,6 +90,10 @@
 			animation-delay: 1.6s;
 			}
 			
+		.diam{
+			background-color: #3fbf79;
+		}
+			
 			
 </style>
 <script src="js/loader.js"></script>
@@ -162,7 +166,7 @@
 				<td>&nbsp;:&nbsp;</td>
 				<td>Dalam Proses</td>
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-				<td width="30px;"><div class="hijau">&nbsp;</td>
+				<td width="30px;"><div class="diam">&nbsp;</td>
 				<td>&nbsp;:&nbsp;</td>
 				<td>Selesai</td>
 			</tr>
