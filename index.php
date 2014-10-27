@@ -119,10 +119,10 @@
             }
         });
         var $container = $("#content");
-        $container.load("full.php");
+        $container.load("table2.php");
         var refreshId = setInterval(function()
         {
-            $container.load('full.php');
+            $container.load('table2.php');
 
         }, 59000); //5menit
     });
@@ -156,7 +156,7 @@
           <div class="span12">
 		  <h1 class="hero-unit">Selamat Datang di Kelurahan Leuwigajah</h1>
 		  Keterangan:
-			<table>
+			<!--<table>
 			<tr>
 				<td width="30px;"><div class="biru">&nbsp;</td>
 				<td>&nbsp;:&nbsp;</td>
@@ -170,7 +170,7 @@
 				<td>&nbsp;:&nbsp;</td>
 				<td>Selesai</td>
 			</tr>
-		  </table>
+		  </table>-->
           </div>
         </div>
       </div>
