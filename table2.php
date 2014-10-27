@@ -61,22 +61,22 @@
 	}
 	b{text-align:center}
 	
-	 .biru {				
+	.biru {				
 				background: #3498db !important;
-			
-				color: #424251;
+				color: #FDFDFF;
+				font-style: bold;
 			}
 			
 	 .kuning {				
 				background: #FF9326 !important;
-			
-				color: #424251;
+				font-style: bold;
+				color: #FDFDFF;
 			}
 			
 	 .hijau {				
 				background: #3fbf79 !important;
-			
-				color: #424251;
+				font-style: bold;
+				color: #FDFDFF;
 				
 			}
 </style>
