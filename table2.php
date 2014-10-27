@@ -39,7 +39,6 @@
 	<style type="text/css">
 	span,b
 	{
-		
 		width: 12.05em;
 		display: inline-block;
 		background-color: #FDFDFF;
@@ -59,7 +58,7 @@
 		color : #ECECFB;
 		text-align: center;
 	}
-	b{text-align:center}
+
 	
 	.biru {				
 				background: #3498db !important;
@@ -74,7 +73,7 @@
 			}
 			
 	 .hijau {				
-				background: #3fbf79 !important;
+				background: #6E9E4B !important;
 				font-style: bold;
 				color: #FDFDFF;
 				
@@ -103,7 +102,7 @@
 <table border="0" width="100%">
 <colgroup><col /><col /><col /><col /><col /><col /></colgroup>
 <thead>
-<tr><th>No Registrasi</th><th>NIK</th><th>Nama</th><th>Petugas</th><th>Status</th><th>Sudah Menunggu</th></tr>
+<tr><th>No Registrasi</th><th>Nama</th><th>Keperluan</th><th>Petugas</th><th>Status</th><th>Sudah Menunggu</th></tr>
 </thead>
 <tbody>
 <?php while ($row = mysql_fetch_array($handonnikah) or die (mysql_error())) {
@@ -132,7 +131,7 @@
 					 }?>
 	
 	
-<tr class="kuning"><td><?php echo $row['no_registrasi']?></td><td><?php echo $row['nik']?></td><td><?php echo $row['nama']?></td><td><?php echo $row['nama_pegawai']?></td><td><?php echo $row['status']?></td><td><?php echo $lama?></td></tr>
+<tr class="kuning"><td><?php echo $row['no_registrasi']?></td><td><?php echo $row['nama']?></td><td>Surat Andonnikah</td><td><?php echo $row['nama_pegawai']?></td><td><?php echo $row['status']?></td><td><?php echo $lama?></td></tr>
 <?php
 			$no++;
 		}
