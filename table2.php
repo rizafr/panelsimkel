@@ -43,6 +43,7 @@
 		display: inline-block;
 		background-color: #ccc;
 		text-align: center;
+		
 	}
 	b{text-align:center}
 </style>
