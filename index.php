@@ -2,7 +2,7 @@
 <?php include "koneksi.php"?>
 <html>
 <head>
-	<title>Sistem Informasi Manajemen Kinerja Kelurahan Leuwi Gajah</title>
+	<title>Sistem Informasi Manajemen Kinerja Pelayanan Kelurahan Leuwigajah</title>
 	  <meta charset="utf-8">
 	<!-- For ease i'm just using a JQuery version hosted by JQuery- you can download any version and link to it locally -->
 		<meta name="description" content="Sistem Informasi Manajemen Kelurahan" />
@@ -93,7 +93,7 @@
 		.diam{
 			background-color: #3fbf79;
 		}
-			
+		
 			
 </style>
 <script src="js/loader.js"></script>
@@ -141,10 +141,10 @@
           </button>
             <div class="nav-collapse collapse">
             <ul class="nav pull-right">
-              <?php echo $hari . "," ." ". $tanggal ." ". $bulan ." ". $tahun; ?> | <span id="clock"> <?php print date('H:i:s'); ?></span> 
+              <?php echo $hari . "," ." ". $tanggal ." ". $bulan ." ". $tahun; ?> | <a style="color : #fff" id="clock"> <?php print date('H:i:s'); ?></a> 
             </ul>
             <ul class="nav pull-left">
-            <img id="logo" src="images/cimahi.png" height="30px" width="30px"/> Sistem Informasi Manajemen Kinerja <span>Kelurahan Leuwigajah</span> 
+            <img id="logo" src="images/cimahi.png" height="30px" width="30px"/> Sistem Informasi Manajemen Kinerja Pelayanan Kelurahan Leuwigajah
             </ul>
             </div>
           </div>
@@ -154,7 +154,7 @@
       <div class="container">
         <div class="row">
           <div class="span12">
-		  <h1 class="hero-unit">Selamat Datang di Kelurahan Leuwigajah</h1>
+		  <!--<h1 class="hero-unit">Selamat Datang di Kelurahan Leuwigajah</h1>-->
 		  Keterangan:
 			<!--<table>
 			<tr>
