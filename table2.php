@@ -89,10 +89,19 @@
 			$handonnikah = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
 											from data_penduduk dp, permintaan_andonnikah an,pengguna p, data_pegawai di
 											where an.nik=dp.nik 
-													and p.id_data_pegawai = di.id_data_pegawai
-											and (an.antrian_oleh = p.id_pengguna
-												or an.proses_oleh = p.id_pengguna)				
-												order by an.no_registrasi desc") or die (mysql_error());
+											and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna or an.proses_oleh = p.id_pengguna) 
+											 				
+											order by an.no_registrasi desc ") or die (mysql_error());
+											
+			//sekolah
+			$sekolah = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
+											from data_penduduk dp, permintaan_sekolah an,pengguna p, data_pegawai di
+											where an.nik=dp.nik 
+											and p.id_data_pegawai = di.id_data_pegawai
+											and (an.antrian_oleh = p.id_pengguna or an.proses_oleh = p.id_pengguna) 
+											 				
+											order by an.no_registrasi desc") or die (mysql_error());
 			$no = 1;
 				
 			
@@ -136,7 +145,43 @@
 			$no++;
 		}
 		?>	
+		
+<?php //sekolah
+	while ($rsekolah = mysql_fetch_array($sekolah) or die (mysql_error())) {
+	if($rsekolah['status']=='1'){ 
+				$rsekolah['status']="<p class='biru'>Masuk Antrian</p>";
+				$waktu ="Waktu Antri: ". $rsekolah['waktu_antrian'];
+				$oleh ="Petugas : ". $rsekolah['nama_pegawai'];
+				$lama = "" .selisih($rsekolah['waktu_antrian'],$waktu_sekarang)."";	
+				$kelas="biru";
+				?>  				
+				<div class="biru">			
+			<?php }else if($rsekolah['status']=='2'){ ?>			
+				<div class="kuning">
+				<?php $rsekolah['status']="<p class='kuning'>Masih dalam proses</p>";
+						$waktu = "Waktu Proses: ". $rsekolah['waktu_proses'];
+						$oleh ="Petugas : ". $rsekolah['nama_pegawai'];
+						$lama = "" .selisih($rsekolah['waktu_antrian'],$waktu_sekarang)."";	
+						$kelas="kuning";
+			?>
+			<?php }else if($rsekolah['status']=='3'){ ?>	
+					<div class="hijau">						
+					<?php		$rsekolah['status']=" <p class='hijau'>Surat telah selesai </p>";	
+								$waktu = "Waktu  selesai: ". $rsekolah['waktu_selesai']."";	
+								$lama = $waktu;	
+								$kelas="hijau";
+					 }?>
+	
+	
+<tr class="kuning"><td><?php echo $rsekolah['no_registrasi']?></td><td><?php echo $rsekolah['nama']?></td><td>Surat Sekolah</td><td><?php echo $rsekolah['nama_pegawai']?></td><td><?php echo $rsekolah['status']?></td><td><?php echo $lama?></td></tr>
+<?php
+			$no++;
+		}
+		?>	
 
+		
+		
+		
 </tbody>
 </table>
 </body>
