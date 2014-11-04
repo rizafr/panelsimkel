@@ -194,10 +194,14 @@
 		  
 			<?php 
 			$berita = mysql_query("select * from berita order by judul_berita asc") or die (mysql_error());			
+			echo ".: ";
 			while ($row = mysql_fetch_array($berita)) {
-			   echo$row['judul_berita'];
-			   echo " ".$row['isi_berita'] ." | ";
-				}?></marquee> 
+			   echo strtoupper($row['judul_berita']);
+			   echo " :  ".$row['isi_berita'] ."  <img src='../images/cimahi.png' width='30px' height='30px'/>  ";
+				}
+			echo " :.";
+			?>
+				</marquee> 
             </p>
           </div>
         </div>

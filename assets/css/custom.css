@@ -110,15 +110,19 @@ padding: 8px 12px;
 
 #footer{
 	padding: 3px 0px;
-	border-top: 3px solid #CACAD9; 
-	background-color: #FDFDFF;
+	color : #FDFDFF;
+	background-color: rgba(44,62,80, 1);
+	border-top: 1px solid rgba(44,62,80, 1);
+	box-shadow: 0px 1px 2px rgba(44,62,80, 0.02); inset, 0px -1px 0px rgba(255, 255, 255, 0.25);
 	-webkit-transition: background-color 200ms ease;
 	-moz-transition: background-color 200ms ease;
 	-o-transition: background-color 200ms ease;
 	transition: background-color 200ms ease;
 	text-align: center;
 	filter: Alpha(Opacity=50);/*IE7 fix*/
-	font-size: 18px;
+	font-size: 26px;
+	line-height: 35px;
+	height: 45px;
 }
 /* Animasi + Prefix untuk browser */
 	@-webkit-keyframes color {
