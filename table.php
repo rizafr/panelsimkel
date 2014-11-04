@@ -1,9 +1,10 @@
 <?php include "koneksi.php";
 	include "selisih.php" ;
 ?>
+ <?php date_default_timezone_set('Asia/Jakarta'); ?>
  <head>
    
-    <link href="../assets/css/table.css" rel="stylesheet">	
+    <link href="../css/table.css" rel="stylesheet">	
 
   </head>
 <style>
@@ -179,11 +180,7 @@
 		}
 		?>	
 
-</table>
-
-					
-					
-					
+</table>			
 					
 					
 					

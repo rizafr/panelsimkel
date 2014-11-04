@@ -117,7 +117,7 @@
 											where an.nik=dp.nik 
 													and p.id_data_pegawai = di.id_data_pegawai
 											and (an.antrian_oleh = p.id_pengguna
-												or an.proses_oleh = p.id_pengguna)	and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   				
+												or an.proses_oleh = p.id_pengguna)  				
 												order by an.no_registrasi desc") or die (mysql_error());
 			$no = 1;
 			while ($row = mysql_fetch_array($belummenikah)) {
@@ -162,12 +162,12 @@
 			$waktu_sekarang = date("H:i:s");
 			//bd
 			$bd = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
-											from data_penduduk dp, permintaan_bd an,pengguna p, data_pegawai di
-											where an.nik=dp.nik 
-													and p.id_data_pegawai = di.id_data_pegawai
-											and (an.antrian_oleh = p.id_pengguna
-												or an.proses_oleh = p.id_pengguna)	and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   				
-												order by an.no_registrasi desc") or die (mysql_error());
+								from data_penduduk dp, permintaan_bd an,pengguna p, data_pegawai di
+								where an.nik=dp.nik 
+										and p.id_data_pegawai = di.id_data_pegawai
+								and (an.antrian_oleh = p.id_pengguna
+									or an.proses_oleh = p.id_pengguna)	 				
+									order by an.no_registrasi desc") or die (mysql_error());
 			$no = 1;
 			while ($row = mysql_fetch_array($bd)) {
 			   if($row['status']=='1'){ 
@@ -211,12 +211,12 @@
 			$waktu_sekarang = date("H:i:s");
 			//bpr
 			$bpr = mysql_query("select an.waktu_antrian,dp.nik,dp.nama,dp.alamat,an.no_registrasi, an.status, an.waktu_antrian, an.antrian_oleh,an.proses_oleh, di.nama_pengguna as nama_pegawai, an.waktu_proses,an.waktu_selesai, DATE_FORMAT(an.tanggal_surat,'%d') as tanggal_surat 
-											from data_penduduk dp, permintaan_bpr an,pengguna p, data_pegawai di
-											where an.nik=dp.nik 
-													and p.id_data_pegawai = di.id_data_pegawai
-											and (an.antrian_oleh = p.id_pengguna
-												or an.proses_oleh = p.id_pengguna)		and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   			
-												order by an.no_registrasi desc") or die (mysql_error());
+									from data_penduduk dp, permintaan_bpr an,pengguna p, data_pegawai di
+									where an.nik=dp.nik 
+											and p.id_data_pegawai = di.id_data_pegawai
+									and (an.antrian_oleh = p.id_pengguna
+										or an.proses_oleh = p.id_pengguna)		and DATE_FORMAT(an.tanggal_surat,'%d') = DAY(NOW())   			
+										order by an.no_registrasi desc") or die (mysql_error());
 			$no = 1;
 			while ($row = mysql_fetch_array($bpr)) {
 			    if($row['status']=='1'){ 
@@ -979,25 +979,25 @@
 
     </script>
 	<script type="text/javascript"> 
-      $(document).ready( function() {
-        $('.hijau').delay(5000).fadeOut();
-      });
+      // $(document).ready( function() {
+        // $('.hijau').delay(10000).fadeOut();
+      // });
 	  
-	// $('html').addClass('js');
+	$('html').addClass('js');
 
-	// $(function() {
+	$(function() {
 
-		  // var timer = setInterval( showDiv, 20000); //2o detik
+		  var timer = setInterval( showDiv, 20000); //2o detik
 
-		 // jam = document.getElementByClass('hijau');
+		 jam = document.getElementByClass('hijau');
 
-		  // function showDiv() {   
+		  function showDiv() {   
 
-			 // $('.hijau').fadeOut();
+			 $('.hijau').fadeOut();
 
-		  // }
+		  }
 
-	// });
+	});
     </script>
     
 
