@@ -39,11 +39,12 @@
 	<style type="text/css">
 	span,b
 	{
-		width: 12.05em;
+		width: 10.7em;
 		display: inline-block;
 		background-color: #FDFDFF;
 		text-align: center;
-		line-height:40px;
+		line-height:45px;
+		font-size: 18px;
 		color : #020202;
 		border-bottom: 1px solid #C9B8AD;
 		border-top: 1px solid #C9B8AD;
@@ -51,8 +52,9 @@
 	
 	b
 	{
+		font-size: 18px;
 		margin-top: 60px;
-		width: 12.05em;
+		width: 10.7em;
 		display: inline-block;
 		background-color: #020202;
 		color : #ECECFB;
@@ -108,7 +110,7 @@
 <tbody>
 <?php while ($row = mysql_fetch_array($handonnikah) or die (mysql_error())) {
 	if($row['status']=='1'){ 
-				$row['status']="<p class='biru'>Masuk Antrian</p>";
+				$row['status']="<p class='biru' style='width=10em'>.</p>";
 				$waktu ="Waktu Antri: ". $row['waktu_antrian'];
 				$oleh ="Petugas : ". $row['nama_pegawai'];
 				$lama = "" .selisih($row['waktu_antrian'],$waktu_sekarang)."";	
@@ -117,7 +119,7 @@
 				<div class="biru">			
 			<?php }else if($row['status']=='2'){ ?>			
 				<div class="kuning">
-				<?php $row['status']="<p class='kuning'>Masih dalam proses</p>";
+				<?php $row['status']="<p class='kuning' style='width=10em'>.</p>";
 						$waktu = "Waktu Proses: ". $row['waktu_proses'];
 						$oleh ="Petugas : ". $row['nama_pegawai'];
 						$lama = "" .selisih($row['waktu_antrian'],$waktu_sekarang)."";	
@@ -125,8 +127,8 @@
 			?>
 			<?php }else if($row['status']=='3'){ ?>	
 					<div class="hijau">						
-					<?php		$row['status']=" <p class='hijau'>Surat telah selesai </p>";	
-								$waktu = "Waktu  selesai: ". $row['waktu_selesai']."";	
+					<?php		$row['status']=" <p class='hijau' style='width=10em'>.</p>";	
+								$waktu = "<h5>Waktu  selesai: ". $row['waktu_selesai']."</h5>";	
 								$lama = $waktu;	
 								$kelas="hijau";
 					 }?>
